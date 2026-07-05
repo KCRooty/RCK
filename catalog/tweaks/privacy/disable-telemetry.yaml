@@ -1,0 +1,16 @@
+id: privacy.disable-telemetry
+category: privacy
+risk: safe
+requires_restart: false
+description: >-
+  Baja el nivel de diagnóstico y telemetría de Windows al mínimo permitido
+  (Security en Enterprise/Education, Basic en Home/Pro). No deshabilita
+  ningún servicio, solo cambia la política de recolección de datos.
+targets:
+  services:
+    - DiagTrack
+  registry:
+    - HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection
+test: Test-DisableTelemetryStatus
+apply: Invoke-ApplyDisableTelemetry
+revert: Invoke-RevertDisableTelemetry

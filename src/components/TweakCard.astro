@@ -1,0 +1,22 @@
+---
+interface Props {
+  id: string;
+  title: string;
+  description: string;
+  risk: "safe" | "moderate" | "advanced" | "expert";
+  applied: boolean;
+}
+
+const { id, title, description, risk, applied } = Astro.props;
+---
+
+<div class="tweak-card" data-tweak-id={id}>
+  <div>
+    <strong>{title}</strong>
+    <span class={`risk-badge risk-badge--${risk}`}>{risk}</span>
+    <p style="color: var(--text-dim); margin: 0.25rem 0 0;">{description}</p>
+  </div>
+  <label class="switch">
+    <input type="checkbox" checked={applied} data-tweak-toggle={id} />
+  </label>
+</div>

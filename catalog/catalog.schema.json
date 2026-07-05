@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RCK Tweak",
+  "type": "object",
+  "required": ["id", "category", "risk", "description", "test", "apply", "revert"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+\\.[a-z0-9-]+$",
+      "description": "Formato categoria.nombre-del-tweak"
+    },
+    "category": {
+      "type": "string",
+      "enum": ["debloat", "privacy", "performance", "services", "network", "appearance", "updates"]
+    },
+    "risk": {
+      "type": "string",
+      "enum": ["safe", "moderate", "advanced", "expert"]
+    },
+    "requires_restart": {
+      "type": "boolean",
+      "default": false
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10
+    },
+    "targets": {
+      "type": "object",
+      "description": "Servicios/rutas de registro que este tweak toca; se valida contra la lista negra (docs/BLACKLIST.md) antes de ejecutar.",
+      "properties": {
+        "services": { "type": "array", "items": { "type": "string" } },
+        "registry": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "test": {
+      "type": "string",
+      "pattern": "^Test-[A-Za-z0-9]+$"
+    },
+    "apply": {
+      "type": "string",
+      "pattern": "^Invoke-Apply[A-Za-z0-9]+$"
+    },
+    "revert": {
+      "type": "string",
+      "pattern": "^Invoke-Revert[A-Za-z0-9]+$"
+    }
+  },
+  "additionalProperties": false
+}

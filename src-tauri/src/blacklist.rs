@@ -1,0 +1,53 @@
+/// Servicios que ningún tweak puede deshabilitar, ni en modo `expert`.
+/// Ver `docs/BLACKLIST.md` para el razonamiento completo detrás de cada uno.
+pub const BLACKLISTED_SERVICES: &[&str] = &[
+    "WinDefend",
+    "wuauserv",
+    "EventLog",
+    "RpcSs",
+    "DcomLaunch",
+    "Winmgmt",
+    "bfe",
+    "mpssvc",
+    "TrustedInstaller",
+];
+
+/// Rutas de registro que ningún tweak puede escribir.
+pub const BLACKLISTED_REGISTRY_PREFIXES: &[&str] = &[
+    r"HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot",
+    r"HKLM\SYSTEM\CurrentControlSet\Services\Tcpip",
+];
+
+pub fn is_service_blacklisted(service: &str) -> bool {
+    BLACKLISTED_SERVICES
+        .iter()
+        .any(|s| s.eq_ignore_ascii_case(service))
+}
+
+pub fn is_registry_path_blacklisted(path: &str) -> bool {
+    let normalized = path.to_ascii_uppercase();
+    BLACKLISTED_REGISTRY_PREFIXES
+        .iter()
+        .any(|p| normalized.starts_with(&p.to_ascii_uppercase()))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn detects_blacklisted_service_case_insensitively() {
+        assert!(is_service_blacklisted("windefend"));
+        assert!(!is_service_blacklisted("Spooler"));
+    }
+
+    #[test]
+    fn detects_blacklisted_registry_prefix() {
+        assert!(is_registry_path_blacklisted(
+            r"HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\Option"
+        ));
+        assert!(!is_registry_path_blacklisted(
+            r"HKCU\Software\Microsoft\Windows\CurrentVersion"
+        ));
+    }
+}

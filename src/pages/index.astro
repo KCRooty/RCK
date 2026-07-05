@@ -1,0 +1,58 @@
+---
+import "../styles/global.css";
+import TweakCard from "../components/TweakCard.astro";
+
+const categories = ["Debloat", "Privacidad", "Rendimiento", "Servicios", "Red", "Apariencia"];
+---
+
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>RCK</title>
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="sidebar">
+        <h2>RCK</h2>
+        {categories.map((cat, i) => (
+          <div class={`sidebar__item ${i === 0 ? "active" : ""}`} data-category={cat}>{cat}</div>
+        ))}
+      </aside>
+      <main class="main">
+        <h1>Privacidad</h1>
+        <div id="tweak-list">
+          <TweakCard
+            id="privacy.disable-telemetry"
+            title="Deshabilitar telemetría"
+            description='Baja el nivel de diagnóstico de Windows a "Security".'
+            risk="safe"
+            applied={false}
+          />
+        </div>
+      </main>
+    </div>
+    <script>
+      import { invoke } from "@tauri-apps/api/core";
+
+      async function loadTweaks() {
+        try {
+          const tweaks = await invoke("list_tweaks", { category: "privacy" });
+          console.log(tweaks);
+        } catch (err) {
+          console.error("No se pudo cargar el catálogo:", err);
+        }
+      }
+
+      document.querySelectorAll("[data-tweak-toggle]").forEach((el) => {
+        el.addEventListener("change", async (e) => {
+          const id = (e.target as HTMLElement).dataset.tweakToggle;
+          const checked = (e.target as HTMLInputElement).checked;
+          const action = checked ? "apply_tweak" : "revert_tweak";
+          await invoke(action, { id });
+        });
+      });
+
+      loadTweaks();
+    </script>
+  </body>
+</html>
