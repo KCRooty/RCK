@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 const catalogDir = resolve(fileURLToPath(import.meta.url), "../../catalog");
 const tweaksDir = join(catalogDir, "tweaks");
 const appsDir = join(catalogDir, "apps");
+const toolsDir = join(catalogDir, "tools");
 const privateKeyPath = join(catalogDir, "private_key.pem");
 const publicKeyPath = join(catalogDir, "public_key.pem");
 const signaturePath = join(catalogDir, "catalog.sig");
@@ -36,11 +37,15 @@ function collectYamlFiles(dir) {
 }
 
 function hashCatalog() {
-  // Cubre tanto tweaks/ como apps/: todo el catálogo se firma como una sola
+  // Cubre tweaks/, apps/ y tools/: todo el catálogo se firma como una sola
   // unidad, igual que lo verifica src-tauri/src/signature.rs.
-  const files = [...collectYamlFiles(tweaksDir), ...collectYamlFiles(appsDir)].sort();
+  const files = [
+    ...collectYamlFiles(tweaksDir),
+    ...collectYamlFiles(appsDir),
+    ...collectYamlFiles(toolsDir),
+  ].sort();
   if (files.length === 0) {
-    throw new Error(`No se encontraron archivos de catálogo en ${tweaksDir} ni ${appsDir}`);
+    throw new Error(`No se encontraron archivos de catálogo en ${tweaksDir}, ${appsDir} ni ${toolsDir}`);
   }
   const hash = createHash("sha256");
   for (const file of files) {

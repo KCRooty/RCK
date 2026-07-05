@@ -44,6 +44,27 @@ function Invoke-Tweak {
 }
 
 <#
+Las herramientas son acciones puntuales (sin test/revert): el Core en Rust
+resuelve qué función Invoke-Run* corresponde a partir del catálogo, igual
+que hace con los tweaks.
+#>
+function Invoke-Tool {
+    param(
+        [Parameter(Mandatory)][string]$FunctionName,
+        [Parameter(Mandatory)][string]$ToolId
+    )
+
+    $command = Get-Command -Name $FunctionName -ErrorAction SilentlyContinue
+    if (-not $command) {
+        throw "Función '$FunctionName' no encontrada para la herramienta '$ToolId'. ¿Falta el archivo en scripts/powershell/Tools/?"
+    }
+
+    Write-TweakLog -Message "[Tool] '$ToolId' -> $FunctionName"
+    & $FunctionName
+    Write-TweakLog -Message "[Tool] '$ToolId' completado"
+}
+
+<#
 Las apps no tienen scriptblocks propios (a diferencia de los tweaks): se
 instalan/desinstalan con el gestor de paquetes indicado, usando el
 identificador de winget o chocolatey que trae el catálogo.
@@ -97,13 +118,16 @@ function Test-AppInstalled {
     return ($installed -match [regex]::Escape($PackageId))
 }
 
-# Dot-source de todos los tweaks al importar el módulo, para que sus
-# funciones Test-*/Invoke-Apply*/Invoke-Revert* queden disponibles.
-$tweaksDir = Join-Path $PSScriptRoot 'Tweaks'
-if (Test-Path $tweaksDir) {
-    Get-ChildItem -Path $tweaksDir -Filter '*.ps1' -Recurse | ForEach-Object {
-        . $_.FullName
+# Dot-source de todos los tweaks y herramientas al importar el módulo, para
+# que sus funciones (Test-*/Invoke-Apply*/Invoke-Revert*/Invoke-Run*) queden
+# disponibles.
+foreach ($subdir in @('Tweaks', 'Tools')) {
+    $dir = Join-Path $PSScriptRoot $subdir
+    if (Test-Path $dir) {
+        Get-ChildItem -Path $dir -Filter '*.ps1' -Recurse | ForEach-Object {
+            . $_.FullName
+        }
     }
 }
 
-Export-ModuleMember -Function Invoke-Tweak, Write-TweakLog, Invoke-InstallApp, Invoke-UninstallApp, Test-AppInstalled
+Export-ModuleMember -Function Invoke-Tweak, Write-TweakLog, Invoke-Tool, Invoke-InstallApp, Invoke-UninstallApp, Test-AppInstalled

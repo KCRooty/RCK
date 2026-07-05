@@ -104,7 +104,21 @@ El motor (`Engine.psm1`) nunca decide qué tocar: siempre pasa por `Invoke-Tweak
 
 ### 5. Generador de catálogo web (`scripts/build-web-catalog.mjs`)
 
-Antes de cada `dev`/`build` (hooks `predev`/`prebuild` en `package.json`), recorre `catalog/tweaks/**/*.yaml` + `catalog/apps/**/*.yaml`, incluye el código fuente `.ps1` de cada tweak, y escribe `src/data/catalog.generated.json`. Esto es lo único que el frontend necesita: nunca lee YAML directamente ni en desktop ni en web (en desktop, el Core en Rust hace su propio parseo del catálogo real para el IPC; el JSON generado solo alimenta el listado/UI y el modo de exportación de script).
+Antes de cada `dev`/`build` (hooks `predev`/`prebuild` en `package.json`), recorre `catalog/tweaks/**/*.yaml` + `catalog/apps/**/*.yaml` + `catalog/tools/**/*.yaml`, incluye el código fuente `.ps1` de cada tweak/herramienta, y escribe `src/data/catalog.generated.json`. Esto es lo único que el frontend necesita: nunca lee YAML directamente ni en desktop ni en web (en desktop, el Core en Rust hace su propio parseo del catálogo real para el IPC; el JSON generado solo alimenta el listado/UI y el modo de exportación de script).
+
+### 5b. Herramientas — acciones puntuales sin estado
+
+A diferencia de un tweak (que tiene test/apply/revert porque representa un estado persistente), una herramienta es una acción de un solo disparo: vaciar la papelera, limpiar temporales, reconstruir la caché de iconos, etc. `catalog/tools/*.yaml` solo declara `run` (una función `Invoke-Run*`), sin `test` ni `revert`. Se seleccionan y aplican con el mismo flujo unificado que tweaks/apps (misma barra de acción, mismo script exportado), pero no tienen switch de estado — no hay "aplicado/no aplicado" que consultar.
+
+### 5c. Dashboard "Inicio"
+
+Panel inicial (inspirado en la pantalla de inicio de Wintoys) con dos partes:
+- Info del equipo (nombre, Windows, CPU, GPU, RAM), leída una vez al cargar vía `get_system_info` (Rust invoca `Get-CimInstance` sobre `Win32_ComputerSystem`/`Win32_OperatingSystem`/`Win32_Processor`/`Win32_VideoController`). Solo disponible en modo desktop — en web se muestra un aviso, ya que el navegador no tiene acceso al hardware.
+- Resumen del catálogo (tweaks/apps/herramientas disponibles), siempre visible en ambos modos porque viene del JSON generado, no de una consulta al sistema.
+
+### 5d. "Ver Script" — vista previa en vivo
+
+Panel que muestra el `.ps1` combinado de la selección actual (tweaks + apps + herramientas), recalculado en cada cambio de selección — inspirado directamente en la pestaña "View Script" de WinScript. Disponible en ambos modos: en desktop es informativo (así verías exactamente qué se ejecutaría si aplicas), en web es la fuente del botón de descarga.
 
 ### 6. Seguridad
 
@@ -124,8 +138,13 @@ Cada acción se registra con timestamp en `%LOCALAPPDATA%\RCK\logs\` (modo deskt
 - **Catálogo declarativo y firmado en vez de lógica dispersa**: permite "unificar" referencias como WinToys/Optimizer/Winaero Tweaker como entradas de datos, y añade una capa de integridad que ninguna de esas referencias resuelve tan bien salvo OptimizerNXT.
 - **Apps como catálogo separado, sin scriptblocks propios**: instalar software es un problema ya resuelto por winget/Chocolatey; no tiene sentido tratarlo como un tweak con apply/revert custom.
 
+## Estética e inspiración de UI
+
+El aspecto visual (switches tipo iOS, sidebar con iconos por categoría, acento violeta, tarjetas de riesgo) está tomado deliberadamente de las referencias que motivaron este proyecto: los switches y el layout de sidebar de **WinScript**, el dashboard de tarjetas de **Wintoys**, y el panel "Ver Script" de WinScript. La sidebar en árbol de **Winaero Tweaker** y las secciones con toggles en dos columnas de **Optimizer** quedan como referencia para una futura vista más densa (ver Fase 3), pero no se replicaron 1:1 en esta pasada.
+
 ## Roadmap
 
 - **Fase 1** (completa): motor PowerShell + catálogo firmado + primer tweak de ejemplo.
 - **Fase 2** (completa): UI Astro dual-mode (web + desktop) + catálogo de apps + ~10 tweaks reales en debloat/privacidad/rendimiento/sistema.
-- **Fase 3**: perfiles compartibles (exportar/importar selección como `.json`), presets (`Balanced`/`Privacy`/`Gaming`/`Extreme`), modo dry-run en la UI, empaquetado real (`tauri build`) con iconos, y ampliar el catálogo (más tweaks de servicios/red/apariencia, más apps).
+- **Fase 2b** (completa): rediseño visual inspirado en WinScript/Wintoys, subsistema de Herramientas (acciones puntuales), dashboard "Inicio" con info del sistema, panel "Ver Script" con vista previa en vivo.
+- **Fase 3**: perfiles compartibles (exportar/importar selección como `.json`), presets (`Balanced`/`Privacy`/`Gaming`/`Extreme`), modo dry-run en la UI, empaquetado real (`tauri build`) con iconos propios, navegador de apps instaladas con desinstalación (tipo Wintoys), medidores en vivo de CPU/RAM/red en el dashboard, y ampliar el catálogo (más tweaks de servicios/red/apariencia, más apps y herramientas).

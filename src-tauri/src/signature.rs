@@ -20,8 +20,8 @@ pub fn verify_catalog(catalog_dir: &Path) -> Result<()> {
     let verifying_key = parse_public_key(&public_key_pem)?;
     let signature = parse_signature(signature_hex.trim())?;
 
-    // Cubre tanto catalog/tweaks/ como catalog/apps/: todo el catálogo se
-    // firma como una sola unidad, no solo los tweaks.
+    // Cubre catalog/tweaks/, catalog/apps/ y catalog/tools/: todo el
+    // catálogo se firma como una sola unidad, no solo los tweaks.
     let hash = hash_catalog(catalog_dir)?;
 
     verifying_key
@@ -35,6 +35,7 @@ fn hash_catalog(catalog_dir: &Path) -> Result<[u8; 32]> {
     let mut files = Vec::new();
     collect_yaml_files(&catalog_dir.join("tweaks"), &mut files)?;
     collect_yaml_files(&catalog_dir.join("apps"), &mut files)?;
+    collect_yaml_files(&catalog_dir.join("tools"), &mut files)?;
     files.sort();
 
     let mut hasher = Sha256::new();

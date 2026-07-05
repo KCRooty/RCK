@@ -5,6 +5,7 @@ import {
   APP_SUBCATEGORIES,
   tweaksByCategory,
   appsBySubcategory,
+  tools,
 } from "../lib/catalog";
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -16,6 +17,17 @@ const CATEGORY_LABELS: Record<string, string> = {
   appearance: "Apariencia",
   updates: "Actualizaciones",
   system: "Sistema",
+};
+
+const CATEGORY_ICONS: Record<string, string> = {
+  debloat: "🧹",
+  privacy: "🔒",
+  performance: "⚡",
+  services: "⚙️",
+  network: "🌐",
+  appearance: "🎨",
+  updates: "🔄",
+  system: "🖥️",
 };
 
 const SUBCATEGORY_LABELS: Record<string, string> = {
@@ -35,53 +47,163 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
   <body>
     <div class="layout">
       <aside class="sidebar">
-        <h2>RCK</h2>
-        {TWEAK_CATEGORIES.map((cat, i) => (
-          <div class={`sidebar__item ${i === 0 ? "active" : ""}`} data-panel-target={`cat-${cat}`}>
-            {CATEGORY_LABELS[cat]}
+        <div class="sidebar__brand">🛡️ RCK</div>
+        <button class="sidebar__uncheck" id="uncheck-all">Desmarcar todo</button>
+
+        <div class="sidebar__item active" data-panel-target="inicio">
+          <span class="sidebar__item-icon">🏠</span> Inicio
+        </div>
+
+        <div class="sidebar__section-label">Tweaks</div>
+        {TWEAK_CATEGORIES.map((cat) => (
+          <div class="sidebar__item" data-panel-target={`cat-${cat}`}>
+            <span class="sidebar__item-icon">{CATEGORY_ICONS[cat]}</span> {CATEGORY_LABELS[cat]}
           </div>
         ))}
-        <div class="sidebar__item" data-panel-target="apps">Apps</div>
+
+        <div class="sidebar__section-label">Extras</div>
+        <div class="sidebar__item" data-panel-target="apps">
+          <span class="sidebar__item-icon">📦</span> Apps
+        </div>
+        <div class="sidebar__item" data-panel-target="tools">
+          <span class="sidebar__item-icon">🛠️</span> Herramientas
+        </div>
+        <div class="sidebar__item" data-panel-target="script">
+          <span class="sidebar__item-icon">📜</span> Ver Script
+        </div>
       </aside>
+
       <main class="main">
-        {TWEAK_CATEGORIES.map((cat, i) => (
-          <section class="panel" data-panel={`cat-${cat}`} hidden={i !== 0}>
-            <h1>{CATEGORY_LABELS[cat]}</h1>
+        <!-- Inicio -->
+        <section class="panel" data-panel="inicio">
+          <div class="main__header">
+            <h1>Inicio</h1>
+          </div>
+          <div class="stat-grid" id="system-info-grid">
+            <div class="stat-card">
+              <div class="stat-card__label">Estado</div>
+              <div class="stat-card__value" id="system-info-status">Cargando…</div>
+            </div>
+          </div>
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-card__label">🧩 Tweaks disponibles</div>
+              <div class="stat-card__value">{TWEAK_CATEGORIES.map((c) => tweaksByCategory(c).length).reduce((a, b) => a + b, 0)}</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card__label">📦 Apps disponibles</div>
+              <div class="stat-card__value">{APP_SUBCATEGORIES.map((s) => appsBySubcategory(s).length).reduce((a, b) => a + b, 0)}</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card__label">🛠️ Herramientas</div>
+              <div class="stat-card__value">{tools.length}</div>
+            </div>
+          </div>
+          <p style="color: var(--text-dim);">
+            Elige una categoría en la barra lateral para empezar. Todo lo que marques se puede revisar en
+            <strong>Ver Script</strong> antes de aplicarlo.
+          </p>
+        </section>
+
+        <!-- Categorías de tweaks -->
+        {TWEAK_CATEGORIES.map((cat) => (
+          <section class="panel" data-panel={`cat-${cat}`} hidden>
+            <div class="main__header">
+              <h1>{CATEGORY_ICONS[cat]} {CATEGORY_LABELS[cat]}</h1>
+              <span class="main__count">{tweaksByCategory(cat).length} tweak(s)</span>
+            </div>
             <div class="tweak-list">
               {tweaksByCategory(cat).length === 0 && <p style="color: var(--text-dim);">Todavía no hay tweaks en esta categoría.</p>}
               {tweaksByCategory(cat).map((tweak) => (
                 <div class="tweak-card" data-tweak-id={tweak.id}>
-                  <div>
-                    <strong>{tweak.id}</strong>
-                    <span class={`risk-badge risk-badge--${tweak.risk}`}>{tweak.risk}</span>
-                    {tweak.requires_restart && <span class="risk-badge" style="background: var(--text-dim);">requiere reinicio</span>}
+                  <div class="tweak-card__body">
+                    <strong>
+                      {tweak.id}
+                      <span class={`risk-badge risk-badge--${tweak.risk}`}>{tweak.risk}</span>
+                      {tweak.requires_restart && <span class="risk-badge risk-badge--neutral">requiere reinicio</span>}
+                    </strong>
                     <p style="color: var(--text-dim); margin: 0.25rem 0 0;">{tweak.description}</p>
                   </div>
-                  <input type="checkbox" data-select-tweak={tweak.id} />
+                  <div class="tweak-card__actions">
+                    <label class="switch">
+                      <input type="checkbox" data-select-tweak={tweak.id} />
+                      <span class="switch__track"></span>
+                    </label>
+                  </div>
                 </div>
               ))}
             </div>
           </section>
         ))}
 
+        <!-- Apps -->
         <section class="panel" data-panel="apps" hidden>
-          <h1>Apps</h1>
+          <div class="main__header">
+            <h1>📦 Apps</h1>
+          </div>
           {APP_SUBCATEGORIES.map((sub) => (
             <div>
               <h3>{SUBCATEGORY_LABELS[sub]}</h3>
               <div class="tweak-list">
                 {appsBySubcategory(sub).map((app) => (
                   <div class="tweak-card" data-app-id={app.id}>
-                    <div>
+                    <div class="tweak-card__body">
                       <strong>{app.name}</strong>
                       <p style="color: var(--text-dim); margin: 0.25rem 0 0;">{app.description}</p>
                     </div>
-                    <input type="checkbox" data-select-app={app.id} />
+                    <div class="tweak-card__actions">
+                      <label class="switch">
+                        <input type="checkbox" data-select-app={app.id} />
+                        <span class="switch__track"></span>
+                      </label>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
           ))}
+        </section>
+
+        <!-- Herramientas -->
+        <section class="panel" data-panel="tools" hidden>
+          <div class="main__header">
+            <h1>🛠️ Herramientas</h1>
+            <span class="main__count">Acciones puntuales, sin estado</span>
+          </div>
+          <div class="tweak-list">
+            {tools.map((tool) => (
+              <div class="tweak-card" data-tool-id={tool.id}>
+                <div class="tweak-card__body">
+                  <strong>
+                    {tool.name}
+                    <span class={`risk-badge risk-badge--${tool.risk}`}>{tool.risk}</span>
+                  </strong>
+                  <p style="color: var(--text-dim); margin: 0.25rem 0 0;">{tool.description}</p>
+                </div>
+                <div class="tweak-card__actions">
+                  <label class="switch">
+                    <input type="checkbox" data-select-tool={tool.id} />
+                    <span class="switch__track"></span>
+                  </label>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <!-- Ver Script -->
+        <section class="panel" data-panel="script" hidden>
+          <div class="main__header">
+            <h1>📜 Ver Script</h1>
+          </div>
+          <p style="color: var(--text-dim);">
+            Así se ve el <code>.ps1</code> que se generaría con tu selección actual — igual se aplique en vivo (desktop) o se descargue (web).
+          </p>
+          <div class="tweak-card__actions" style="margin-bottom: 0.75rem;">
+            <button class="button" id="copy-script">Copiar</button>
+            <button class="button" id="download-script">Descargar .ps1</button>
+          </div>
+          <pre class="script-preview" id="script-preview">Selecciona algún tweak, app o herramienta para ver el script aquí.</pre>
         </section>
 
         <div class="action-bar" id="action-bar">
@@ -91,43 +213,36 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
       </main>
     </div>
 
-    <style>
-      .action-bar {
-        position: sticky;
-        bottom: 0;
-        margin-top: 1.5rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem;
-        background: var(--bg-elevated);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-      }
-      .action-bar button {
-        background: var(--accent);
-        color: white;
-        border: none;
-        padding: 0.6rem 1.2rem;
-        border-radius: 6px;
-        cursor: pointer;
-        font-weight: 600;
-      }
-      .action-bar button:disabled {
-        background: var(--border);
-        cursor: not-allowed;
-      }
-    </style>
-
     <script>
       import { isDesktop } from "../lib/runtime";
-      import { tweaks, apps } from "../lib/catalog";
+      import { tweaks, apps, tools } from "../lib/catalog";
       import { buildScript, downloadScript } from "../lib/scriptBuilder";
       import { desktop } from "../lib/tauriClient";
 
       const desktopMode = isDesktop();
       const selectedTweaks = new Set<string>();
       const selectedApps = new Set<string>();
+      const selectedTools = new Set<string>();
+
+      function currentSelection() {
+        return {
+          tweaks: tweaks.filter((t) => selectedTweaks.has(t.id)),
+          apps: apps
+            .filter((a) => selectedApps.has(a.id))
+            .map((app) => ({ app, manager: (app.winget ? "winget" : "choco") as "winget" | "choco" })),
+          tools: tools.filter((t) => selectedTools.has(t.id)),
+        };
+      }
+
+      function refreshScriptPreview() {
+        const preview = document.getElementById("script-preview")!;
+        const selection = currentSelection();
+        const total = selection.tweaks.length + selection.apps.length + selection.tools.length;
+        preview.textContent =
+          total === 0
+            ? "Selecciona algún tweak, app o herramienta para ver el script aquí."
+            : buildScript(selection);
+      }
 
       document.querySelectorAll("[data-panel-target]").forEach((item) => {
         item.addEventListener("click", () => {
@@ -137,11 +252,12 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
           document.querySelectorAll("[data-panel]").forEach((panel) => {
             (panel as HTMLElement).hidden = (panel as HTMLElement).dataset.panel !== target;
           });
+          if (target === "script") refreshScriptPreview();
         });
       });
 
       function updateActionBar() {
-        const count = selectedTweaks.size + selectedApps.size;
+        const count = selectedTweaks.size + selectedApps.size + selectedTools.size;
         const countEl = document.getElementById("selection-count")!;
         const button = document.getElementById("action-button") as HTMLButtonElement;
         countEl.textContent = `${count} seleccionado${count === 1 ? "" : "s"}`;
@@ -149,47 +265,89 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
         button.textContent = desktopMode
           ? `Aplicar ${count} cambio${count === 1 ? "" : "s"}`
           : `Descargar script (${count} cambio${count === 1 ? "" : "s"})`;
+        refreshScriptPreview();
       }
 
-      document.querySelectorAll<HTMLInputElement>("[data-select-tweak]").forEach((el) => {
-        el.addEventListener("change", () => {
-          const id = el.dataset.selectTweak!;
-          if (el.checked) selectedTweaks.add(id);
-          else selectedTweaks.delete(id);
-          updateActionBar();
+      function wireCheckboxes(selector: string, set: Set<string>, dataKey: string) {
+        document.querySelectorAll<HTMLInputElement>(selector).forEach((el) => {
+          el.addEventListener("change", () => {
+            const id = (el.dataset as Record<string, string | undefined>)[dataKey]!;
+            if (el.checked) set.add(id);
+            else set.delete(id);
+            updateActionBar();
+          });
         });
+      }
+
+      wireCheckboxes("[data-select-tweak]", selectedTweaks, "selectTweak");
+      wireCheckboxes("[data-select-app]", selectedApps, "selectApp");
+      wireCheckboxes("[data-select-tool]", selectedTools, "selectTool");
+
+      document.getElementById("uncheck-all")!.addEventListener("click", () => {
+        selectedTweaks.clear();
+        selectedApps.clear();
+        selectedTools.clear();
+        document
+          .querySelectorAll<HTMLInputElement>("[data-select-tweak], [data-select-app], [data-select-tool]")
+          .forEach((el) => (el.checked = false));
+        updateActionBar();
       });
 
-      document.querySelectorAll<HTMLInputElement>("[data-select-app]").forEach((el) => {
-        el.addEventListener("change", () => {
-          const id = el.dataset.selectApp!;
-          if (el.checked) selectedApps.add(id);
-          else selectedApps.delete(id);
-          updateActionBar();
-        });
+      document.getElementById("copy-script")!.addEventListener("click", async () => {
+        const text = document.getElementById("script-preview")!.textContent ?? "";
+        await navigator.clipboard.writeText(text);
+      });
+
+      document.getElementById("download-script")!.addEventListener("click", () => {
+        downloadScript(buildScript(currentSelection()));
       });
 
       document.getElementById("action-button")!.addEventListener("click", async () => {
-        const chosenTweaks = tweaks.filter((t) => selectedTweaks.has(t.id));
-        const chosenApps = apps
-          .filter((a) => selectedApps.has(a.id))
-          .map((app) => ({ app, manager: (app.winget ? "winget" : "choco") as "winget" | "choco" }));
+        const selection = currentSelection();
 
         if (desktopMode) {
           await desktop.createRestorePoint("RCK - aplicando cambios seleccionados");
-          for (const tweak of chosenTweaks) {
+          for (const tweak of selection.tweaks) {
             await desktop.applyTweak(tweak.id);
           }
-          for (const { app, manager } of chosenApps) {
+          for (const { app, manager } of selection.apps) {
             await desktop.installApp(app.id, manager);
+          }
+          for (const tool of selection.tools) {
+            await desktop.runTool(tool.id);
           }
           alert("Cambios aplicados.");
         } else {
-          const script = buildScript(chosenTweaks, chosenApps);
-          downloadScript(script);
+          downloadScript(buildScript(selection));
         }
       });
 
+      // Dashboard: info del sistema (solo disponible en modo desktop).
+      async function loadSystemInfo() {
+        const statusEl = document.getElementById("system-info-status")!;
+        const grid = document.getElementById("system-info-grid")!;
+
+        if (!desktopMode) {
+          statusEl.textContent = "Solo disponible en la app de escritorio";
+          return;
+        }
+
+        try {
+          const info = await desktop.getSystemInfo();
+          grid.innerHTML = `
+            <div class="stat-card"><div class="stat-card__label">💻 Equipo</div><div class="stat-card__value">${info.computer_name}</div></div>
+            <div class="stat-card"><div class="stat-card__label">🪟 Windows</div><div class="stat-card__value">${info.os_caption} (build ${info.os_build})</div></div>
+            <div class="stat-card"><div class="stat-card__label">🧠 CPU</div><div class="stat-card__value">${info.cpu_name}</div></div>
+            <div class="stat-card"><div class="stat-card__label">🎮 GPU</div><div class="stat-card__value">${info.gpu_name}</div></div>
+            <div class="stat-card"><div class="stat-card__label">📊 RAM</div><div class="stat-card__value">${info.ram_total_gb} GB</div></div>
+          `;
+        } catch (err) {
+          statusEl.textContent = "No se pudo leer la información del sistema";
+          console.error(err);
+        }
+      }
+
+      loadSystemInfo();
       updateActionBar();
     </script>
   </body>

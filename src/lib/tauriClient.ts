@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import type { PackageManager } from "./types";
+import type { PackageManager, SystemInfo } from "./types";
 
 export const desktop = {
   getTweakStatus: (id: string) => invoke<boolean>("get_tweak_status", { id }),
@@ -9,4 +9,6 @@ export const desktop = {
   getAppStatus: (id: string, manager: PackageManager) => invoke<boolean>("get_app_status", { id, manager }),
   installApp: (id: string, manager: PackageManager) => invoke<void>("install_app", { id, manager }),
   uninstallApp: (id: string, manager: PackageManager) => invoke<void>("uninstall_app", { id, manager }),
+  runTool: (id: string) => invoke<void>("run_tool", { id }),
+  getSystemInfo: () => invoke<SystemInfo>("get_system_info"),
 };

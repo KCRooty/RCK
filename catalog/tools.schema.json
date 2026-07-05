@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RCK Tool",
+  "type": "object",
+  "required": ["id", "name", "description", "risk", "script", "run"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^tools\\.[a-z0-9-]+$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10
+    },
+    "risk": {
+      "type": "string",
+      "enum": ["safe", "moderate", "advanced", "expert"]
+    },
+    "requires_restart": {
+      "type": "boolean",
+      "default": false
+    },
+    "script": {
+      "type": "string",
+      "description": "Archivo .ps1 en scripts/powershell/Tools/ que define la función.",
+      "pattern": "^[A-Za-z0-9-]+\\.ps1$"
+    },
+    "run": {
+      "type": "string",
+      "description": "Función que ejecuta la acción (sin estado de test/revert: es una acción puntual).",
+      "pattern": "^Invoke-Run[A-Za-z0-9]+$"
+    }
+  },
+  "additionalProperties": false
+}

@@ -6,14 +6,36 @@ use tauri_plugin_shell::ShellExt;
 use crate::apps::{self, AppCatalog, AppEntry};
 use crate::blacklist;
 use crate::catalog::{self, Catalog, Tweak};
+use crate::system::SystemInfo;
+use crate::tools::{self, ToolCatalog, ToolEntry};
 
 pub struct CatalogState(pub Mutex<Catalog>);
 pub struct AppCatalogState(pub Mutex<AppCatalog>);
+pub struct ToolCatalogState(pub Mutex<ToolCatalog>);
 
 fn resource_path(app: &AppHandle, relative: &str) -> Result<std::path::PathBuf, String> {
     app.path()
         .resolve(relative, tauri::path::BaseDirectory::Resource)
         .map_err(|e| format!("no se pudo resolver la ruta de recursos '{relative}': {e}"))
+}
+
+/// Único punto por el que el Core invoca PowerShell. Todas las acciones
+/// (tweaks, apps, herramientas) pasan por aquí para que el manejo de
+/// errores y la forma de invocar `powershell` sean consistentes.
+async fn invoke_powershell(app: &AppHandle, command: &str) -> Result<String, String> {
+    let output = app
+        .shell()
+        .command("powershell")
+        .args(["-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command", command])
+        .output()
+        .await
+        .map_err(|e| format!("no se pudo invocar powershell: {e}"))?;
+
+    if !output.status.success() {
+        return Err(String::from_utf8_lossy(&output.stderr).to_string());
+    }
+
+    Ok(String::from_utf8_lossy(&output.stdout).to_string())
 }
 
 #[tauri::command]
@@ -89,7 +111,6 @@ async fn run_engine_action(
     }
 
     let engine_path = resource_path(app, "scripts/powershell/Engine.psm1")?;
-
     let command = format!(
         "Import-Module '{}'; Invoke-Tweak -Action '{}' -FunctionName '{}' -TweakId '{}'",
         engine_path.display(),
@@ -98,22 +119,9 @@ async fn run_engine_action(
         id
     );
 
-    let output = app
-        .shell()
-        .command("powershell")
-        .args(["-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command", &command])
-        .output()
+    invoke_powershell(app, &command)
         .await
-        .map_err(|e| format!("no se pudo invocar powershell: {e}"))?;
-
-    if !output.status.success() {
-        return Err(format!(
-            "Invoke-Tweak ({action}) falló para '{id}': {}",
-            String::from_utf8_lossy(&output.stderr)
-        ));
-    }
-
-    Ok(String::from_utf8_lossy(&output.stdout).to_string())
+        .map_err(|e| format!("Invoke-Tweak ({action}) falló para '{id}': {e}"))
 }
 
 fn reject_if_blacklisted(tweak: &Tweak) -> Result<(), String> {
@@ -208,7 +216,6 @@ async fn run_app_action(
     package_id: &str,
 ) -> Result<String, String> {
     let engine_path = resource_path(app, "scripts/powershell/Engine.psm1")?;
-
     let command = format!(
         "Import-Module '{}'; {} -Manager '{}' -PackageId '{}'",
         engine_path.display(),
@@ -217,20 +224,48 @@ async fn run_app_action(
         package_id
     );
 
-    let output = app
-        .shell()
-        .command("powershell")
-        .args(["-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command", &command])
-        .output()
+    invoke_powershell(app, &command)
         .await
-        .map_err(|e| format!("no se pudo invocar powershell: {e}"))?;
+        .map_err(|e| format!("{function_name} falló para '{package_id}' ({manager}): {e}"))
+}
 
-    if !output.status.success() {
-        return Err(format!(
-            "{function_name} falló para '{package_id}' ({manager}): {}",
-            String::from_utf8_lossy(&output.stderr)
-        ));
-    }
+pub fn load_initial_tools(app: &AppHandle) -> anyhow::Result<ToolCatalog> {
+    let catalog_dir = resource_path(app, "catalog").map_err(anyhow::Error::msg)?;
+    tools::load_tools(&catalog_dir)
+}
 
-    Ok(String::from_utf8_lossy(&output.stdout).to_string())
+#[tauri::command]
+pub fn list_tools(state: State<ToolCatalogState>) -> Result<Vec<ToolEntry>, String> {
+    let catalog = state.0.lock().map_err(|e| e.to_string())?;
+    Ok(catalog.tools.clone())
+}
+
+#[tauri::command]
+pub async fn run_tool(app: AppHandle, state: State<'_, ToolCatalogState>, id: String) -> Result<(), String> {
+    let function_name = {
+        let catalog = state.0.lock().map_err(|e| e.to_string())?;
+        catalog
+            .find(&id)
+            .ok_or_else(|| format!("herramienta desconocida: {id}"))?
+            .run
+            .clone()
+    };
+
+    let engine_path = resource_path(&app, "scripts/powershell/Engine.psm1")?;
+    let command = format!(
+        "Import-Module '{}'; Invoke-Tool -FunctionName '{}' -ToolId '{}'",
+        engine_path.display(),
+        function_name,
+        id
+    );
+
+    invoke_powershell(&app, &command)
+        .await
+        .map(|_| ())
+        .map_err(|e| format!("'{id}' falló: {e}"))
+}
+
+#[tauri::command]
+pub async fn get_system_info(app: AppHandle) -> Result<SystemInfo, String> {
+    crate::system::query(&app).await.map_err(|e| e.to_string())
 }

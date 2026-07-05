@@ -52,9 +52,9 @@ npm run tauri:dev
 
 ## Estado
 
-✅ Fase 1 y 2: motor PowerShell + catálogo firmado (10 tweaks: debloat/privacidad/rendimiento/sistema) + catálogo de apps (13 apps vía winget/choco) + UI dual-mode (web/desktop) funcionando de punta a punta.
+✅ Fase 1, 2 y 2b: motor PowerShell + catálogo firmado (10 tweaks: debloat/privacidad/rendimiento/sistema) + catálogo de apps (13 apps vía winget/choco) + catálogo de herramientas (5 acciones puntuales: DNS, temporales, papelera, caché de iconos, índice de búsqueda) + UI dual-mode (web/desktop) con dashboard "Inicio" y panel "Ver Script", con estética inspirada en WinScript/Wintoys — todo funcionando de punta a punta.
 
-🚧 Pendiente (Fase 3): perfiles compartibles, presets, modo dry-run en la UI, empaquetado real con iconos, ampliar catálogo. Ver `docs/ARCHITECTURE.md` para el roadmap completo.
+🚧 Pendiente (Fase 3): perfiles compartibles, presets, modo dry-run en la UI, empaquetado real con iconos propios, navegador de apps instaladas (tipo Wintoys), medidores de sistema en vivo, ampliar catálogo. Ver `docs/ARCHITECTURE.md` para el roadmap completo.
 
 ## Aviso
 

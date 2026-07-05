@@ -1,0 +1,39 @@
+- id: tools.flush-dns
+  name: Vaciar caché DNS
+  description: Limpia la caché de resolución DNS de Windows. Útil tras cambiar de red o si un sitio no carga con su nueva IP.
+  risk: safe
+  requires_restart: false
+  script: Flush-Dns.ps1
+  run: Invoke-RunFlushDns
+
+- id: tools.clear-temp-files
+  name: Limpiar archivos temporales
+  description: Borra el contenido de las carpetas temporales del usuario y del sistema.
+  risk: safe
+  requires_restart: false
+  script: Clear-TempFiles.ps1
+  run: Invoke-RunClearTempFiles
+
+- id: tools.empty-recycle-bin
+  name: Vaciar papelera de reciclaje
+  description: Vacía la papelera de reciclaje de todas las unidades.
+  risk: safe
+  requires_restart: false
+  script: Empty-RecycleBin.ps1
+  run: Invoke-RunEmptyRecycleBin
+
+- id: tools.flush-icon-cache
+  name: Reconstruir caché de iconos
+  description: Soluciona iconos rotos o desactualizados en el Explorador, reiniciándolo y reconstruyendo su caché.
+  risk: moderate
+  requires_restart: false
+  script: Flush-IconCache.ps1
+  run: Invoke-RunFlushIconCache
+
+- id: tools.rebuild-search-index
+  name: Reconstruir índice de búsqueda
+  description: Reinicia el índice de búsqueda de Windows. Después tardará un tiempo en volver a indexar tus archivos.
+  risk: moderate
+  requires_restart: false
+  script: Rebuild-SearchIndex.ps1
+  run: Invoke-RunRebuildSearchIndex

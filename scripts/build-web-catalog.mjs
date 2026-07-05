@@ -12,7 +12,9 @@ const root = resolve(fileURLToPath(import.meta.url), "../..");
 const catalogDir = join(root, "catalog");
 const tweaksYamlDir = join(catalogDir, "tweaks");
 const appsYamlDir = join(catalogDir, "apps");
+const toolsYamlDir = join(catalogDir, "tools");
 const tweaksScriptDir = join(root, "scripts", "powershell", "Tweaks");
+const toolsScriptDir = join(root, "scripts", "powershell", "Tools");
 const outDir = join(root, "src", "data");
 const outFile = join(outDir, "catalog.generated.json");
 
@@ -47,17 +49,31 @@ function loadApps() {
   return files.flatMap((file) => parse(readFileSync(file, "utf8")));
 }
 
+function loadTools() {
+  const files = collectFiles(toolsYamlDir, [".yaml", ".yml"]);
+  return files.flatMap((file) => parse(readFileSync(file, "utf8"))).map((tool) => {
+    const scriptPath = join(toolsScriptDir, tool.script);
+    if (!existsSync(scriptPath)) {
+      throw new Error(`La herramienta '${tool.id}' referencia '${tool.script}', que no existe en ${toolsScriptDir}`);
+    }
+    return { ...tool, psSource: readFileSync(scriptPath, "utf8") };
+  });
+}
+
 function main() {
   const tweaks = loadTweaks();
   const apps = loadApps();
+  const tools = loadTools();
 
   mkdirSync(outDir, { recursive: true });
   writeFileSync(
     outFile,
-    JSON.stringify({ generatedAt: new Date().toISOString(), tweaks, apps }, null, 2)
+    JSON.stringify({ generatedAt: new Date().toISOString(), tweaks, apps, tools }, null, 2)
   );
 
-  console.log(`Catálogo web generado: ${tweaks.length} tweak(s), ${apps.length} app(s) -> ${outFile}`);
+  console.log(
+    `Catálogo web generado: ${tweaks.length} tweak(s), ${apps.length} app(s), ${tools.length} herramienta(s) -> ${outFile}`
+  );
 }
 
 main();
