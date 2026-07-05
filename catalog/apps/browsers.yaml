@@ -1,0 +1,20 @@
+- id: apps.firefox
+  name: Mozilla Firefox
+  description: Navegador web de código abierto, con buen soporte de privacidad.
+  subcategory: browsers
+  winget: Mozilla.Firefox
+  choco: firefox
+
+- id: apps.brave
+  name: Brave
+  description: Navegador basado en Chromium con bloqueo de anuncios y rastreadores integrado.
+  subcategory: browsers
+  winget: Brave.Brave
+  choco: brave
+
+- id: apps.chrome
+  name: Google Chrome
+  description: Navegador de Google, el más usado y con mejor compatibilidad web.
+  subcategory: browsers
+  winget: Google.Chrome
+  choco: googlechrome

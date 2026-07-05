@@ -1,0 +1,14 @@
+id: debloat.remove-copilot
+category: debloat
+risk: safe
+requires_restart: false
+description: >-
+  Deshabilita Windows Copilot vía política de grupo y quita su acceso directo
+  de la barra de tareas. No desinstala componentes del sistema.
+targets:
+  registry:
+    - HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot
+script: Remove-Copilot.ps1
+test: Test-CopilotDisabled
+apply: Invoke-ApplyRemoveCopilot
+revert: Invoke-RevertRemoveCopilot

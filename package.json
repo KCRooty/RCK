@@ -4,23 +4,29 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "predev": "node scripts/build-web-catalog.mjs",
     "dev": "astro dev",
+    "prebuild": "node scripts/build-web-catalog.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
-    "sign-catalog": "node scripts/sign-catalog.mjs"
+    "sign-catalog": "node scripts/sign-catalog.mjs",
+    "build:catalog": "node scripts/build-web-catalog.mjs"
   },
   "dependencies": {
-    "astro": "^4.15.0",
     "@tauri-apps/api": "^2.0.0",
-    "@tauri-apps/plugin-shell": "^2.0.0",
     "@tauri-apps/plugin-dialog": "^2.0.0",
-    "@tauri-apps/plugin-fs": "^2.0.0"
+    "@tauri-apps/plugin-fs": "^2.0.0",
+    "@tauri-apps/plugin-shell": "^2.0.0",
+    "astro": "^4.15.0"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.9",
     "@tauri-apps/cli": "^2.0.0",
-    "typescript": "^5.5.0"
+    "playwright": "^1.61.1",
+    "typescript": "^5.5.0",
+    "yaml": "^2.5.0"
   }
 }

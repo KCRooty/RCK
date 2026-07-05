@@ -6,22 +6,25 @@ A diferencia de herramientas "tierra quemada" (Platinum, ISOs debloateadas), RCK
 
 Inspirado en (pero no acoplado a) WinScript, OptimizerNXT, WinToys, Chris Titus WinUtil, SDI y Winaero Tweaker — unificados bajo un único catálogo de tweaks firmado criptográficamente.
 
+Como WinScript, **el mismo código sirve como web pública y como app de escritorio**: en el navegador, eliges tweaks/apps y descargas un `.ps1` para correrlo tú mismo; en la app de escritorio (Tauri), se aplican en vivo con estado en tiempo real y reversión con un clic.
+
 ## Stack
 
-- **UI**: Astro + TypeScript, empaquetado como app de escritorio con **Tauri 2** (Rust)
-- **Catálogo de tweaks**: YAML declarativo, **firmado con Ed25519** (ver `catalog/README.md`)
-- **Motor de ejecución**: PowerShell 7 (`scripts/powershell/`), invocado desde Rust vía `tauri-plugin-shell`
-- **Seguridad**: restore point automático, backup granular de registro, lista negra dura de componentes intocables, modo dry-run
+- **UI**: Astro + TypeScript — `src/pages/index.astro` (landing) y `src/pages/app.astro` (constructor, dual-mode)
+- **Desktop**: **Tauri 2** (Rust) envuelve la misma UI y aplica cambios en vivo por IPC
+- **Catálogo**: YAML declarativo (tweaks + apps), **firmado con Ed25519** (ver `catalog/README.md`)
+- **Motor de ejecución**: PowerShell 7 (`scripts/powershell/`), invocado desde Rust vía `tauri-plugin-shell` en desktop, o embebido en el `.ps1` descargado en modo web
+- **Seguridad**: restore point automático, backup granular de registro, lista negra dura de componentes intocables
 
 Ver la arquitectura completa en [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ## Estructura del repo
 
 ```
-src/            UI Astro (frontend)
-src-tauri/      Backend Rust (Tauri): IPC, verificación de firma, backups
-catalog/        Catálogo de tweaks (YAML) + clave pública + firma
-scripts/        Motor PowerShell (Test/Apply/Revert por tweak) + script de firmado
+src/            UI Astro (landing + constructor dual-mode) + lib compartida (catálogo, script builder, cliente Tauri)
+src-tauri/      Backend Rust (Tauri): IPC, verificación de firma, backups, apps
+catalog/        Catálogo de tweaks y apps (YAML) + clave pública + firma
+scripts/        Motor PowerShell (Test/Apply/Revert por tweak) + firmado + generador de catálogo web
 docs/           Arquitectura, lista negra, decisiones de diseño
 ```
 
@@ -35,12 +38,23 @@ docs/           Arquitectura, lista negra, decisiones de diseño
 
 ```bash
 npm install
+
+# Genera tu propio par de claves y firma el catálogo (una vez)
+node scripts/sign-catalog.mjs --generate-keys
+npm run sign-catalog
+
+# Modo web (navegador, genera scripts .ps1 descargables)
+npm run dev
+
+# Modo desktop (Tauri, aplica en vivo — requiere Windows + Rust)
 npm run tauri:dev
 ```
 
 ## Estado
 
-🚧 Fase 1 en progreso: motor de tweaks + catálogo + primer tweak de ejemplo. Ver `docs/ARCHITECTURE.md` para el roadmap completo.
+✅ Fase 1 y 2: motor PowerShell + catálogo firmado (10 tweaks: debloat/privacidad/rendimiento/sistema) + catálogo de apps (13 apps vía winget/choco) + UI dual-mode (web/desktop) funcionando de punta a punta.
+
+🚧 Pendiente (Fase 3): perfiles compartibles, presets, modo dry-run en la UI, empaquetado real con iconos, ampliar catálogo. Ver `docs/ARCHITECTURE.md` para el roadmap completo.
 
 ## Aviso
 

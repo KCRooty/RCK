@@ -1,0 +1,20 @@
+- id: apps.7zip
+  name: 7-Zip
+  description: Compresor/descompresor de archivos, gratuito y de código abierto.
+  subcategory: utilities
+  winget: 7zip.7zip
+  choco: 7zip
+
+- id: apps.powertoys
+  name: PowerToys
+  description: Utilidades oficiales de Microsoft para power users (FancyZones, PowerRename, etc.).
+  subcategory: utilities
+  winget: Microsoft.PowerToys
+  choco: powertoys
+
+- id: apps.everything
+  name: Everything
+  description: Buscador de archivos instantáneo por nombre, para todo el disco.
+  subcategory: utilities
+  winget: voidtools.Everything
+  choco: everything

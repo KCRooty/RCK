@@ -13,6 +13,7 @@
     "windows": [
       {
         "title": "RCK",
+        "url": "app.html",
         "width": 1100,
         "height": 720,
         "minWidth": 900,

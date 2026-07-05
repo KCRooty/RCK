@@ -1,58 +1,192 @@
 ---
 import "../styles/global.css";
-import TweakCard from "../components/TweakCard.astro";
+import { tweaks, apps } from "../lib/catalog";
 
-const categories = ["Debloat", "Privacidad", "Rendimiento", "Servicios", "Red", "Apariencia"];
+const tweakCount = tweaks.length;
+const appCount = apps.length;
 ---
 
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <title>RCK</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RCK — Optimiza y configura Windows a tu manera</title>
+    <meta
+      name="description"
+      content="RCK es una herramienta de código abierto para debloatear, proteger tu privacidad y optimizar el rendimiento de Windows 10/11, sin romper nada esencial. Corre online o como app de escritorio."
+    />
   </head>
   <body>
-    <div class="layout">
-      <aside class="sidebar">
-        <h2>RCK</h2>
-        {categories.map((cat, i) => (
-          <div class={`sidebar__item ${i === 0 ? "active" : ""}`} data-category={cat}>{cat}</div>
-        ))}
-      </aside>
-      <main class="main">
-        <h1>Privacidad</h1>
-        <div id="tweak-list">
-          <TweakCard
-            id="privacy.disable-telemetry"
-            title="Deshabilitar telemetría"
-            description='Baja el nivel de diagnóstico de Windows a "Security".'
-            risk="safe"
-            applied={false}
-          />
+    <main class="landing">
+      <nav class="nav">
+        <strong>RCK</strong>
+        <div class="nav__links">
+          <a href="/app.html">Constructor</a>
+          <a href="https://github.com/KCRooty/RCK" target="_blank" rel="noopener">GitHub</a>
+          <a href="/docs/ARCHITECTURE.md" target="_blank">Docs</a>
         </div>
-      </main>
-    </div>
-    <script>
-      import { invoke } from "@tauri-apps/api/core";
+      </nav>
 
-      async function loadTweaks() {
-        try {
-          const tweaks = await invoke("list_tweaks", { category: "privacy" });
-          console.log(tweaks);
-        } catch (err) {
-          console.error("No se pudo cargar el catálogo:", err);
-        }
+      <section class="hero">
+        <h1>Haz que Windows sea tuyo.</h1>
+        <p class="hero__subtitle">
+          Herramienta de código abierto para construir tu propio script de optimización de Windows desde cero.
+          Debloat, privacidad, rendimiento e instalación de apps — sin cargarte nada esencial del sistema.
+        </p>
+        <div class="hero__cta">
+          <a class="button button--primary" href="/app.html">Empezar (versión online) →</a>
+          <a class="button" href="https://github.com/KCRooty/RCK/releases" target="_blank" rel="noopener">Descargar versión de escritorio →</a>
+        </div>
+        <p class="hero__note">
+          {tweakCount} tweaks y {appCount} apps en el catálogo, y creciendo — 100% reversible, 100% auditable.
+        </p>
+      </section>
+
+      <section class="features">
+        <div class="feature-card">
+          <h3>🔒 Privacidad</h3>
+          <p>Deshabilita telemetría de Windows y de terceros, historial de actividad, ID de publicidad y más.</p>
+        </div>
+        <div class="feature-card">
+          <h3>⚡ Rendimiento</h3>
+          <p>Plan de máximo rendimiento, ajustes de servicios en segundo plano, Storage Sense, y más.</p>
+        </div>
+        <div class="feature-card">
+          <h3>🧹 Debloat</h3>
+          <p>Quita OneDrive, Copilot, Widgets y otros componentes que no necesitas — nunca los esenciales.</p>
+        </div>
+        <div class="feature-card">
+          <h3>📦 Apps</h3>
+          <p>Instala en bloque tus apps favoritas vía winget o Chocolatey, en un clic.</p>
+        </div>
+      </section>
+
+      <section class="pitch">
+        <h2>Reversible por diseño</h2>
+        <p>
+          A diferencia de optimizadores "tierra quemada" que rompen componentes esenciales para ganar rendimiento,
+          cada tweak de RCK se puede revertir, respeta una lista negra dura de servicios/registro intocables, y
+          crea un punto de restauración antes de aplicar cambios. El catálogo completo está firmado
+          criptográficamente — nada se ejecuta si el contenido fue alterado.
+        </p>
+      </section>
+
+      <section class="pitch">
+        <h2>Web y escritorio, mismo código</h2>
+        <p>
+          Desde esta misma página puedes elegir tus tweaks y descargar un script <code>.ps1</code> para correrlo tú
+          mismo — el navegador nunca toca tu sistema. Si prefieres aplicar los cambios en vivo, con estado en tiempo
+          real y reversión con un clic, descarga la app de escritorio.
+        </p>
+      </section>
+
+      <footer class="footer">
+        <p>RCK es un proyecto de código abierto bajo licencia MIT.</p>
+        <div class="footer__links">
+          <a href="/app.html">Constructor</a>
+          <a href="https://github.com/KCRooty/RCK" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://github.com/KCRooty/RCK/releases" target="_blank" rel="noopener">Descargar</a>
+        </div>
+      </footer>
+    </main>
+
+    <style>
+      .landing {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 1.5rem 1.5rem 3rem;
       }
-
-      document.querySelectorAll("[data-tweak-toggle]").forEach((el) => {
-        el.addEventListener("change", async (e) => {
-          const id = (e.target as HTMLElement).dataset.tweakToggle;
-          const checked = (e.target as HTMLInputElement).checked;
-          const action = checked ? "apply_tweak" : "revert_tweak";
-          await invoke(action, { id });
-        });
-      });
-
-      loadTweaks();
-    </script>
+      .nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+      }
+      .nav__links {
+        display: flex;
+        gap: 1.25rem;
+      }
+      .nav__links a {
+        color: var(--text-dim);
+        text-decoration: none;
+      }
+      .hero {
+        text-align: center;
+        padding: 3rem 0 2rem;
+      }
+      .hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .hero__subtitle {
+        color: var(--text-dim);
+        max-width: 640px;
+        margin: 0 auto 1.5rem;
+      }
+      .hero__cta {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .hero__note {
+        margin-top: 1rem;
+        color: var(--text-dim);
+        font-size: 0.9rem;
+      }
+      .button {
+        display: inline-block;
+        padding: 0.7rem 1.4rem;
+        border-radius: 6px;
+        text-decoration: none;
+        border: 1px solid var(--border);
+        color: var(--text);
+      }
+      .button--primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: white;
+      }
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin: 2.5rem 0;
+      }
+      .feature-card {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 1.25rem;
+      }
+      .feature-card p {
+        color: var(--text-dim);
+        font-size: 0.9rem;
+      }
+      .pitch {
+        margin: 2rem 0;
+      }
+      .pitch p {
+        color: var(--text-dim);
+      }
+      .footer {
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: var(--text-dim);
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .footer__links {
+        display: flex;
+        gap: 1.25rem;
+      }
+      .footer__links a {
+        color: var(--text-dim);
+      }
+    </style>
   </body>
 </html>

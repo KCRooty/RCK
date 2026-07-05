@@ -43,6 +43,60 @@ function Invoke-Tweak {
     Write-Output $result
 }
 
+<#
+Las apps no tienen scriptblocks propios (a diferencia de los tweaks): se
+instalan/desinstalan con el gestor de paquetes indicado, usando el
+identificador de winget o chocolatey que trae el catálogo.
+#>
+function Invoke-InstallApp {
+    param(
+        [Parameter(Mandatory)][ValidateSet('winget', 'choco')][string]$Manager,
+        [Parameter(Mandatory)][string]$PackageId
+    )
+
+    Write-TweakLog -Message "[InstallApp] $Manager -> $PackageId"
+
+    if ($Manager -eq 'winget') {
+        winget install --id $PackageId --exact --silent --accept-package-agreements --accept-source-agreements
+    } else {
+        choco install $PackageId -y
+    }
+
+    if ($LASTEXITCODE -ne 0) {
+        throw "La instalación de '$PackageId' vía $Manager falló (exit code $LASTEXITCODE)"
+    }
+}
+
+function Invoke-UninstallApp {
+    param(
+        [Parameter(Mandatory)][ValidateSet('winget', 'choco')][string]$Manager,
+        [Parameter(Mandatory)][string]$PackageId
+    )
+
+    Write-TweakLog -Message "[UninstallApp] $Manager -> $PackageId"
+
+    if ($Manager -eq 'winget') {
+        winget uninstall --id $PackageId --exact --silent
+    } else {
+        choco uninstall $PackageId -y
+    }
+}
+
+function Test-AppInstalled {
+    param(
+        [Parameter(Mandatory)][ValidateSet('winget', 'choco')][string]$Manager,
+        [Parameter(Mandatory)][string]$PackageId
+    )
+
+    if ($Manager -eq 'winget') {
+        $installed = winget list --id $PackageId --exact 2>$null
+        return ($installed -match [regex]::Escape($PackageId))
+    }
+
+    $installed = choco list --local-only $PackageId --exact 2>$null
+    return ($installed -match [regex]::Escape($PackageId))
+}
+
 # Dot-source de todos los tweaks al importar el módulo, para que sus
 # funciones Test-*/Invoke-Apply*/Invoke-Revert* queden disponibles.
 $tweaksDir = Join-Path $PSScriptRoot 'Tweaks'
@@ -52,4 +106,4 @@ if (Test-Path $tweaksDir) {
     }
 }
 
-Export-ModuleMember -Function Invoke-Tweak, Write-TweakLog
+Export-ModuleMember -Function Invoke-Tweak, Write-TweakLog, Invoke-InstallApp, Invoke-UninstallApp, Test-AppInstalled

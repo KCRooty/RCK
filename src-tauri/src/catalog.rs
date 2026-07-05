@@ -34,6 +34,8 @@ pub struct Tweak {
     /// contra la lista negra antes de invocar el motor PowerShell.
     #[serde(default)]
     pub targets: Targets,
+    /// Archivo .ps1 en scripts/powershell/Tweaks/ que define las funciones.
+    pub script: String,
     /// Nombre de la función PowerShell que aplica el tweak.
     pub apply: String,
     /// Nombre de la función PowerShell que revierte el tweak.
@@ -102,4 +104,22 @@ fn walkdir(dir: &Path) -> Result<Vec<std::path::PathBuf>> {
         }
     }
     Ok(out)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn loads_the_real_catalog_and_finds_a_known_tweak() {
+        let dir = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../catalog");
+        let catalog = load_catalog(&dir).expect("el catálogo real del repo debe cargar y verificar su firma");
+
+        assert!(!catalog.tweaks.is_empty());
+        let telemetry = catalog
+            .find("privacy.disable-telemetry")
+            .expect("el tweak de ejemplo debe existir en el catálogo");
+        assert_eq!(telemetry.category, "privacy");
+        assert_eq!(telemetry.risk, Risk::Safe);
+    }
 }

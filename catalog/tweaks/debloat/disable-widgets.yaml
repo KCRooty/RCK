@@ -1,0 +1,14 @@
+id: debloat.disable-widgets
+category: debloat
+risk: safe
+requires_restart: false
+description: >-
+  Deshabilita el panel de Widgets/News and Interests de la barra de tareas
+  vía política de grupo. Reversible sin reiniciar.
+targets:
+  registry:
+    - HKLM\SOFTWARE\Policies\Microsoft\Dsh
+script: Disable-Widgets.ps1
+test: Test-WidgetsDisabled
+apply: Invoke-ApplyDisableWidgets
+revert: Invoke-RevertDisableWidgets

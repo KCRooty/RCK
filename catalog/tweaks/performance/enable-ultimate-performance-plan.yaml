@@ -1,0 +1,12 @@
+id: performance.enable-ultimate-performance-plan
+category: performance
+risk: safe
+requires_restart: false
+description: >-
+  Habilita y activa el plan de energía "Máximo rendimiento" de Windows,
+  oculto por defecto. Aumenta consumo eléctrico a cambio de menor latencia.
+targets: {}
+script: Enable-UltimatePerformancePlan.ps1
+test: Test-UltimatePerformancePlanActive
+apply: Invoke-ApplyEnableUltimatePerformancePlan
+revert: Invoke-RevertEnableUltimatePerformancePlan

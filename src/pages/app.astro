@@ -1,0 +1,196 @@
+---
+import "../styles/global.css";
+import {
+  TWEAK_CATEGORIES,
+  APP_SUBCATEGORIES,
+  tweaksByCategory,
+  appsBySubcategory,
+} from "../lib/catalog";
+
+const CATEGORY_LABELS: Record<string, string> = {
+  debloat: "Debloat",
+  privacy: "Privacidad",
+  performance: "Rendimiento",
+  services: "Servicios",
+  network: "Red",
+  appearance: "Apariencia",
+  updates: "Actualizaciones",
+  system: "Sistema",
+};
+
+const SUBCATEGORY_LABELS: Record<string, string> = {
+  browsers: "Navegadores",
+  "dev-tools": "Herramientas de desarrollo",
+  utilities: "Utilidades",
+  media: "Multimedia",
+  communication: "Comunicación",
+};
+---
+
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>RCK — Constructor</title>
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="sidebar">
+        <h2>RCK</h2>
+        {TWEAK_CATEGORIES.map((cat, i) => (
+          <div class={`sidebar__item ${i === 0 ? "active" : ""}`} data-panel-target={`cat-${cat}`}>
+            {CATEGORY_LABELS[cat]}
+          </div>
+        ))}
+        <div class="sidebar__item" data-panel-target="apps">Apps</div>
+      </aside>
+      <main class="main">
+        {TWEAK_CATEGORIES.map((cat, i) => (
+          <section class="panel" data-panel={`cat-${cat}`} hidden={i !== 0}>
+            <h1>{CATEGORY_LABELS[cat]}</h1>
+            <div class="tweak-list">
+              {tweaksByCategory(cat).length === 0 && <p style="color: var(--text-dim);">Todavía no hay tweaks en esta categoría.</p>}
+              {tweaksByCategory(cat).map((tweak) => (
+                <div class="tweak-card" data-tweak-id={tweak.id}>
+                  <div>
+                    <strong>{tweak.id}</strong>
+                    <span class={`risk-badge risk-badge--${tweak.risk}`}>{tweak.risk}</span>
+                    {tweak.requires_restart && <span class="risk-badge" style="background: var(--text-dim);">requiere reinicio</span>}
+                    <p style="color: var(--text-dim); margin: 0.25rem 0 0;">{tweak.description}</p>
+                  </div>
+                  <input type="checkbox" data-select-tweak={tweak.id} />
+                </div>
+              ))}
+            </div>
+          </section>
+        ))}
+
+        <section class="panel" data-panel="apps" hidden>
+          <h1>Apps</h1>
+          {APP_SUBCATEGORIES.map((sub) => (
+            <div>
+              <h3>{SUBCATEGORY_LABELS[sub]}</h3>
+              <div class="tweak-list">
+                {appsBySubcategory(sub).map((app) => (
+                  <div class="tweak-card" data-app-id={app.id}>
+                    <div>
+                      <strong>{app.name}</strong>
+                      <p style="color: var(--text-dim); margin: 0.25rem 0 0;">{app.description}</p>
+                    </div>
+                    <input type="checkbox" data-select-app={app.id} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </section>
+
+        <div class="action-bar" id="action-bar">
+          <span id="selection-count">0 seleccionados</span>
+          <button id="action-button" disabled>Selecciona al menos un elemento</button>
+        </div>
+      </main>
+    </div>
+
+    <style>
+      .action-bar {
+        position: sticky;
+        bottom: 0;
+        margin-top: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: var(--bg-elevated);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+      }
+      .action-bar button {
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .action-bar button:disabled {
+        background: var(--border);
+        cursor: not-allowed;
+      }
+    </style>
+
+    <script>
+      import { isDesktop } from "../lib/runtime";
+      import { tweaks, apps } from "../lib/catalog";
+      import { buildScript, downloadScript } from "../lib/scriptBuilder";
+      import { desktop } from "../lib/tauriClient";
+
+      const desktopMode = isDesktop();
+      const selectedTweaks = new Set<string>();
+      const selectedApps = new Set<string>();
+
+      document.querySelectorAll("[data-panel-target]").forEach((item) => {
+        item.addEventListener("click", () => {
+          document.querySelectorAll("[data-panel-target]").forEach((i) => i.classList.remove("active"));
+          item.classList.add("active");
+          const target = (item as HTMLElement).dataset.panelTarget;
+          document.querySelectorAll("[data-panel]").forEach((panel) => {
+            (panel as HTMLElement).hidden = (panel as HTMLElement).dataset.panel !== target;
+          });
+        });
+      });
+
+      function updateActionBar() {
+        const count = selectedTweaks.size + selectedApps.size;
+        const countEl = document.getElementById("selection-count")!;
+        const button = document.getElementById("action-button") as HTMLButtonElement;
+        countEl.textContent = `${count} seleccionado${count === 1 ? "" : "s"}`;
+        button.disabled = count === 0;
+        button.textContent = desktopMode
+          ? `Aplicar ${count} cambio${count === 1 ? "" : "s"}`
+          : `Descargar script (${count} cambio${count === 1 ? "" : "s"})`;
+      }
+
+      document.querySelectorAll<HTMLInputElement>("[data-select-tweak]").forEach((el) => {
+        el.addEventListener("change", () => {
+          const id = el.dataset.selectTweak!;
+          if (el.checked) selectedTweaks.add(id);
+          else selectedTweaks.delete(id);
+          updateActionBar();
+        });
+      });
+
+      document.querySelectorAll<HTMLInputElement>("[data-select-app]").forEach((el) => {
+        el.addEventListener("change", () => {
+          const id = el.dataset.selectApp!;
+          if (el.checked) selectedApps.add(id);
+          else selectedApps.delete(id);
+          updateActionBar();
+        });
+      });
+
+      document.getElementById("action-button")!.addEventListener("click", async () => {
+        const chosenTweaks = tweaks.filter((t) => selectedTweaks.has(t.id));
+        const chosenApps = apps
+          .filter((a) => selectedApps.has(a.id))
+          .map((app) => ({ app, manager: (app.winget ? "winget" : "choco") as "winget" | "choco" }));
+
+        if (desktopMode) {
+          await desktop.createRestorePoint("RCK - aplicando cambios seleccionados");
+          for (const tweak of chosenTweaks) {
+            await desktop.applyTweak(tweak.id);
+          }
+          for (const { app, manager } of chosenApps) {
+            await desktop.installApp(app.id, manager);
+          }
+          alert("Cambios aplicados.");
+        } else {
+          const script = buildScript(chosenTweaks, chosenApps);
+          downloadScript(script);
+        }
+      });
+
+      updateActionBar();
+    </script>
+  </body>
+</html>

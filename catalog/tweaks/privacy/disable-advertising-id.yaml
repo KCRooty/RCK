@@ -1,0 +1,14 @@
+id: privacy.disable-advertising-id
+category: privacy
+risk: safe
+requires_restart: false
+description: >-
+  Deshabilita el ID de publicidad de Windows, usado por las apps para
+  mostrarte anuncios personalizados entre distintas aplicaciones.
+targets:
+  registry:
+    - HKCU\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo
+script: Disable-AdvertisingId.ps1
+test: Test-AdvertisingIdDisabled
+apply: Invoke-ApplyDisableAdvertisingId
+revert: Invoke-RevertDisableAdvertisingId

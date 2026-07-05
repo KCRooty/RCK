@@ -1,0 +1,15 @@
+id: system.disable-fast-startup
+category: system
+risk: moderate
+requires_restart: true
+description: >-
+  Deshabilita el Inicio rápido (hibernación parcial en el apagado). Evita
+  problemas de doble arranque en discos compartidos con Linux y algunos
+  cuelgues tras actualizaciones, a cambio de un apagado/arranque algo más lento.
+targets:
+  registry:
+    - HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power
+script: Disable-FastStartup.ps1
+test: Test-FastStartupDisabled
+apply: Invoke-ApplyDisableFastStartup
+revert: Invoke-RevertDisableFastStartup

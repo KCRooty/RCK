@@ -1,0 +1,13 @@
+- id: apps.vlc
+  name: VLC Media Player
+  description: Reproductor multimedia universal, soporta prácticamente cualquier formato.
+  subcategory: media
+  winget: VideoLAN.VLC
+  choco: vlc
+
+- id: apps.foobar2000
+  name: foobar2000
+  description: Reproductor de audio ligero y muy configurable.
+  subcategory: media
+  winget: PeterPawlowski.foobar2000
+  choco: foobar2000

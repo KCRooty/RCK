@@ -1,0 +1,27 @@
+- id: apps.vscode
+  name: Visual Studio Code
+  description: Editor de código de Microsoft, extensible vía plugins.
+  subcategory: dev-tools
+  winget: Microsoft.VisualStudioCode
+  choco: vscode
+
+- id: apps.git
+  name: Git
+  description: Sistema de control de versiones distribuido.
+  subcategory: dev-tools
+  winget: Git.Git
+  choco: git
+
+- id: apps.windows-terminal
+  name: Windows Terminal
+  description: Terminal moderna de Microsoft con pestañas y perfiles configurables.
+  subcategory: dev-tools
+  winget: Microsoft.WindowsTerminal
+  choco: microsoft-windows-terminal
+
+- id: apps.nodejs
+  name: Node.js LTS
+  description: Entorno de ejecución de JavaScript del lado del servidor.
+  subcategory: dev-tools
+  winget: OpenJS.NodeJS.LTS
+  choco: nodejs-lts

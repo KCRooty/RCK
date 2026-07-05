@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "RCK Tweak",
   "type": "object",
-  "required": ["id", "category", "risk", "description", "test", "apply", "revert"],
+  "required": ["id", "category", "risk", "description", "script", "test", "apply", "revert"],
   "properties": {
     "id": {
       "type": "string",
@@ -11,7 +11,7 @@
     },
     "category": {
       "type": "string",
-      "enum": ["debloat", "privacy", "performance", "services", "network", "appearance", "updates"]
+      "enum": ["debloat", "privacy", "performance", "services", "network", "appearance", "updates", "system"]
     },
     "risk": {
       "type": "string",
@@ -33,6 +33,11 @@
         "registry": { "type": "array", "items": { "type": "string" } }
       },
       "additionalProperties": false
+    },
+    "script": {
+      "type": "string",
+      "description": "Nombre del archivo .ps1 en scripts/powershell/Tweaks/ que define las funciones apply/revert/test.",
+      "pattern": "^[A-Za-z0-9-]+\\.ps1$"
     },
     "test": {
       "type": "string",

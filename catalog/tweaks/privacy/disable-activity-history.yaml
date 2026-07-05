@@ -1,0 +1,14 @@
+id: privacy.disable-activity-history
+category: privacy
+risk: safe
+requires_restart: false
+description: >-
+  Deshabilita el historial de actividades de Windows (Timeline/Activity
+  Feed): deja de publicar y subir tu actividad reciente a Microsoft.
+targets:
+  registry:
+    - HKLM\SOFTWARE\Policies\Microsoft\Windows\System
+script: Disable-ActivityHistory.ps1
+test: Test-ActivityHistoryDisabled
+apply: Invoke-ApplyDisableActivityHistory
+revert: Invoke-RevertDisableActivityHistory

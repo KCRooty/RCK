@@ -1,0 +1,14 @@
+id: debloat.remove-onedrive
+category: debloat
+risk: moderate
+requires_restart: false
+description: >-
+  Desinstala Microsoft OneDrive usando su propio desinstalador y elimina sus
+  entradas de inicio automático. No toca el Explorador de archivos en sí.
+targets:
+  registry:
+    - HKCU\Software\Microsoft\Windows\CurrentVersion\Run
+script: Remove-OneDrive.ps1
+test: Test-OneDriveRemoved
+apply: Invoke-ApplyRemoveOneDrive
+revert: Invoke-RevertRemoveOneDrive

@@ -1,0 +1,6 @@
+- id: apps.discord
+  name: Discord
+  description: Chat de voz y texto orientado a comunidades y gaming.
+  subcategory: communication
+  winget: Discord.Discord
+  choco: discord

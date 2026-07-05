@@ -1,0 +1,14 @@
+id: performance.disable-storage-sense
+category: performance
+risk: safe
+requires_restart: false
+description: >-
+  Deshabilita Storage Sense (limpieza automática de disco en segundo plano),
+  útil en SSDs pequeños donde el escaneo periódico afecta al rendimiento.
+targets:
+  registry:
+    - HKCU\Software\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\StoragePolicy
+script: Disable-StorageSense.ps1
+test: Test-StorageSenseDisabled
+apply: Invoke-ApplyDisableStorageSense
+revert: Invoke-RevertDisableStorageSense

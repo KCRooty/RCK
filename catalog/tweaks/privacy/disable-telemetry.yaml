@@ -11,6 +11,7 @@ targets:
     - DiagTrack
   registry:
     - HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection
+script: Disable-Telemetry.ps1
 test: Test-DisableTelemetryStatus
 apply: Invoke-ApplyDisableTelemetry
 revert: Invoke-RevertDisableTelemetry

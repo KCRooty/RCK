@@ -4,6 +4,10 @@ dist/
 src-tauri/target/
 src-tauri/gen/
 
+# Generado por scripts/build-web-catalog.mjs a partir de catalog/ — no es
+# fuente de verdad, se regenera en cada `npm run dev`/`build`.
+src/data/catalog.generated.json
+
 *.log
 .DS_Store
 Thumbs.db

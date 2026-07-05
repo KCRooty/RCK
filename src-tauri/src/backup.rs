@@ -30,7 +30,23 @@ pub async fn create_restore_point(app: &tauri::AppHandle, description: &str) -> 
 
 /// Exporta una clave de registro a un `.reg` en el directorio de backups antes
 /// de que un tweak la modifique, para poder revertir manualmente si algo falla.
-pub async fn export_registry_key(app: &tauri::AppHandle, key_path: &str) -> Result<PathBuf> {
+///
+/// Devuelve `Ok(None)` si la clave todavía no existe (caso común: muchos
+/// tweaks crean su propia clave de política la primera vez que se aplican,
+/// así que no hay nada que respaldar).
+pub async fn export_registry_key(app: &tauri::AppHandle, key_path: &str) -> Result<Option<PathBuf>> {
+    let query = app
+        .shell()
+        .command("reg")
+        .args(["query", key_path])
+        .output()
+        .await
+        .context("no se pudo invocar 'reg query'")?;
+
+    if !query.status.success() {
+        return Ok(None);
+    }
+
     let backup_dir = backups_dir()?;
     std::fs::create_dir_all(&backup_dir)?;
 
@@ -53,7 +69,7 @@ pub async fn export_registry_key(app: &tauri::AppHandle, key_path: &str) -> Resu
         );
     }
 
-    Ok(dest)
+    Ok(Some(dest))
 }
 
 fn backups_dir() -> Result<PathBuf> {
