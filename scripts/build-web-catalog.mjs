@@ -15,6 +15,7 @@ const appsYamlDir = join(catalogDir, "apps");
 const toolsYamlDir = join(catalogDir, "tools");
 const tweaksScriptDir = join(root, "scripts", "powershell", "Tweaks");
 const toolsScriptDir = join(root, "scripts", "powershell", "Tools");
+const presetsFile = join(catalogDir, "presets.yaml");
 const outDir = join(root, "src", "data");
 const outFile = join(outDir, "catalog.generated.json");
 
@@ -60,19 +61,35 @@ function loadTools() {
   });
 }
 
+function loadPresets(knownIds) {
+  if (!existsSync(presetsFile)) return [];
+  const presets = parse(readFileSync(presetsFile, "utf8"));
+  for (const preset of presets) {
+    for (const id of [...preset.tweaks, ...preset.apps, ...preset.tools]) {
+      if (!knownIds.has(id)) {
+        throw new Error(`El preset '${preset.id}' referencia '${id}', que no existe en el catálogo`);
+      }
+    }
+  }
+  return presets;
+}
+
 function main() {
   const tweaks = loadTweaks();
   const apps = loadApps();
   const tools = loadTools();
 
+  const knownIds = new Set([...tweaks, ...apps, ...tools].map((entry) => entry.id));
+  const presets = loadPresets(knownIds);
+
   mkdirSync(outDir, { recursive: true });
   writeFileSync(
     outFile,
-    JSON.stringify({ generatedAt: new Date().toISOString(), tweaks, apps, tools }, null, 2)
+    JSON.stringify({ generatedAt: new Date().toISOString(), tweaks, apps, tools, presets }, null, 2)
   );
 
   console.log(
-    `Catálogo web generado: ${tweaks.length} tweak(s), ${apps.length} app(s), ${tools.length} herramienta(s) -> ${outFile}`
+    `Catálogo web generado: ${tweaks.length} tweak(s), ${apps.length} app(s), ${tools.length} herramienta(s), ${presets.length} preset(s) -> ${outFile}`
   );
 }
 
