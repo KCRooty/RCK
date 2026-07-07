@@ -41,6 +41,15 @@ export interface ToolEntry {
   psSource?: string;
 }
 
+export interface Preset {
+  id: string;
+  name: string;
+  description: string;
+  tweaks: string[];
+  apps: string[];
+  tools: string[];
+}
+
 export interface SystemInfo {
   computer_name: string;
   os_caption: string;

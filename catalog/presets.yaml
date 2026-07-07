@@ -1,0 +1,65 @@
+# Presets: atajos de selección para la UI. No son ejecutables por sí mismos
+# — solo pre-marcan tweaks/apps/herramientas que ya existen en el catálogo
+# firmado, así que no necesitan (ni tienen) firma propia: la seguridad real
+# sigue viviendo en cada tweak/app/herramienta individual.
+- id: presets.balanced
+  name: Balanced
+  description: Un buen punto de partida sin tocar nada avanzado — privacidad básica y limpieza.
+  tweaks:
+    - privacy.disable-telemetry
+    - privacy.disable-activity-history
+    - privacy.disable-advertising-id
+    - performance.disable-storage-sense
+    - system.show-file-extensions
+  apps:
+    - apps.7zip
+  tools:
+    - tools.clear-temp-files
+
+- id: presets.privacy
+  name: Privacidad máxima
+  description: Todo lo relacionado con telemetría, historial de actividad y recolección de datos.
+  tweaks:
+    - privacy.disable-telemetry
+    - privacy.disable-activity-history
+    - privacy.disable-advertising-id
+    - debloat.remove-copilot
+    - debloat.disable-widgets
+  apps:
+    - apps.brave
+  tools: []
+
+- id: presets.gaming
+  name: Gaming
+  description: Rendimiento máximo y menos distracciones en segundo plano.
+  tweaks:
+    - performance.enable-ultimate-performance-plan
+    - performance.disable-storage-sense
+    - debloat.disable-widgets
+    - system.disable-fast-startup
+  apps:
+    - apps.discord
+  tools:
+    - tools.flush-dns
+
+- id: presets.extreme
+  name: Extreme
+  description: Aplica todos los tweaks safe/moderate del catálogo y todas las herramientas de mantenimiento.
+  tweaks:
+    - debloat.disable-widgets
+    - debloat.remove-copilot
+    - debloat.remove-onedrive
+    - performance.disable-storage-sense
+    - performance.enable-ultimate-performance-plan
+    - privacy.disable-activity-history
+    - privacy.disable-advertising-id
+    - privacy.disable-telemetry
+    - system.disable-fast-startup
+    - system.show-file-extensions
+  apps: []
+  tools:
+    - tools.flush-dns
+    - tools.clear-temp-files
+    - tools.empty-recycle-bin
+    - tools.flush-icon-cache
+    - tools.rebuild-search-index

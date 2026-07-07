@@ -6,6 +6,7 @@ import {
   tweaksByCategory,
   appsBySubcategory,
   tools,
+  presets,
 } from "../lib/catalog";
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -52,6 +53,9 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
 
         <div class="sidebar__item active" data-panel-target="inicio">
           <span class="sidebar__item-icon">🏠</span> Inicio
+        </div>
+        <div class="sidebar__item" data-panel-target="presets">
+          <span class="sidebar__item-icon">⭐</span> Presets
         </div>
 
         <div class="sidebar__section-label">Tweaks</div>
@@ -100,9 +104,33 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
             </div>
           </div>
           <p style="color: var(--text-dim);">
-            Elige una categoría en la barra lateral para empezar. Todo lo que marques se puede revisar en
-            <strong>Ver Script</strong> antes de aplicarlo.
+            Elige una categoría en la barra lateral para empezar, o usa un <strong>Preset</strong> para partir de una
+            selección ya pensada. Todo lo que marques se puede revisar en <strong>Ver Script</strong> antes de aplicarlo.
           </p>
+        </section>
+
+        <!-- Presets -->
+        <section class="panel" data-panel="presets" hidden>
+          <div class="main__header">
+            <h1>⭐ Presets</h1>
+            <span class="main__count">Reemplazan tu selección actual</span>
+          </div>
+          <div class="tweak-list">
+            {presets.map((preset) => (
+              <div class="tweak-card" data-preset-id={preset.id}>
+                <div class="tweak-card__body">
+                  <strong>{preset.name}</strong>
+                  <p style="color: var(--text-dim); margin: 0.25rem 0 0;">{preset.description}</p>
+                  <p style="color: var(--text-dim); margin: 0.25rem 0 0; font-size: 0.8rem;">
+                    {preset.tweaks.length} tweak(s) · {preset.apps.length} app(s) · {preset.tools.length} herramienta(s)
+                  </p>
+                </div>
+                <div class="tweak-card__actions">
+                  <button class="button button--primary" data-apply-preset={preset.id}>Aplicar preset</button>
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
 
         <!-- Categorías de tweaks -->
@@ -110,7 +138,10 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
           <section class="panel" data-panel={`cat-${cat}`} hidden>
             <div class="main__header">
               <h1>{CATEGORY_ICONS[cat]} {CATEGORY_LABELS[cat]}</h1>
-              <span class="main__count">{tweaksByCategory(cat).length} tweak(s)</span>
+              <span class="main__count">
+                {tweaksByCategory(cat).length} tweak(s)
+                <button class="button" data-refresh-status={`cat-${cat}`} style="margin-left: 0.5rem; padding: 0.2rem 0.6rem; font-size: 0.75rem;">🔄 Estado</button>
+              </span>
             </div>
             <div class="tweak-list">
               {tweaksByCategory(cat).length === 0 && <p style="color: var(--text-dim);">Todavía no hay tweaks en esta categoría.</p>}
@@ -121,6 +152,7 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
                       {tweak.id}
                       <span class={`risk-badge risk-badge--${tweak.risk}`}>{tweak.risk}</span>
                       {tweak.requires_restart && <span class="risk-badge risk-badge--neutral">requiere reinicio</span>}
+                      <span class="risk-badge risk-badge--neutral" data-status-tweak={tweak.id}>—</span>
                     </strong>
                     <p style="color: var(--text-dim); margin: 0.25rem 0 0;">{tweak.description}</p>
                   </div>
@@ -140,6 +172,7 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
         <section class="panel" data-panel="apps" hidden>
           <div class="main__header">
             <h1>📦 Apps</h1>
+            <button class="button" data-refresh-status="apps" style="padding: 0.3rem 0.75rem; font-size: 0.8rem;">🔄 Estado</button>
           </div>
           {APP_SUBCATEGORIES.map((sub) => (
             <div>
@@ -148,7 +181,10 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
                 {appsBySubcategory(sub).map((app) => (
                   <div class="tweak-card" data-app-id={app.id}>
                     <div class="tweak-card__body">
-                      <strong>{app.name}</strong>
+                      <strong>
+                        {app.name}
+                        <span class="risk-badge risk-badge--neutral" data-status-app={app.id}>—</span>
+                      </strong>
                       <p style="color: var(--text-dim); margin: 0.25rem 0 0;">{app.description}</p>
                     </div>
                     <div class="tweak-card__actions">
@@ -202,6 +238,9 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
           <div class="tweak-card__actions" style="margin-bottom: 0.75rem;">
             <button class="button" id="copy-script">Copiar</button>
             <button class="button" id="download-script">Descargar .ps1</button>
+            <button class="button" id="export-profile">Exportar selección (.json)</button>
+            <button class="button" id="import-profile">Importar selección (.json)</button>
+            <input type="file" id="import-profile-input" accept="application/json" hidden />
           </div>
           <pre class="script-preview" id="script-preview">Selecciona algún tweak, app o herramienta para ver el script aquí.</pre>
         </section>
@@ -215,21 +254,26 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
 
     <script>
       import { isDesktop } from "../lib/runtime";
-      import { tweaks, apps, tools } from "../lib/catalog";
+      import { tweaks, apps, tools, presets } from "../lib/catalog";
       import { buildScript, downloadScript } from "../lib/scriptBuilder";
       import { desktop } from "../lib/tauriClient";
+      import type { PackageManager } from "../lib/types";
 
       const desktopMode = isDesktop();
       const selectedTweaks = new Set<string>();
       const selectedApps = new Set<string>();
       const selectedTools = new Set<string>();
 
+      function preferredManager(app: (typeof apps)[number]): PackageManager {
+        return app.winget ? "winget" : "choco";
+      }
+
       function currentSelection() {
         return {
           tweaks: tweaks.filter((t) => selectedTweaks.has(t.id)),
           apps: apps
             .filter((a) => selectedApps.has(a.id))
-            .map((app) => ({ app, manager: (app.winget ? "winget" : "choco") as "winget" | "choco" })),
+            .map((app) => ({ app, manager: preferredManager(app) })),
           tools: tools.filter((t) => selectedTools.has(t.id)),
         };
       }
@@ -253,6 +297,8 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
             (panel as HTMLElement).hidden = (panel as HTMLElement).dataset.panel !== target;
           });
           if (target === "script") refreshScriptPreview();
+          if (target === "apps") refreshAppStatuses();
+          if (target?.startsWith("cat-")) refreshTweakStatuses(target.replace("cat-", ""));
         });
       });
 
@@ -283,7 +329,7 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
       wireCheckboxes("[data-select-app]", selectedApps, "selectApp");
       wireCheckboxes("[data-select-tool]", selectedTools, "selectTool");
 
-      document.getElementById("uncheck-all")!.addEventListener("click", () => {
+      function uncheckAll() {
         selectedTweaks.clear();
         selectedApps.clear();
         selectedTools.clear();
@@ -291,6 +337,118 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
           .querySelectorAll<HTMLInputElement>("[data-select-tweak], [data-select-app], [data-select-tool]")
           .forEach((el) => (el.checked = false));
         updateActionBar();
+      }
+
+      document.getElementById("uncheck-all")!.addEventListener("click", uncheckAll);
+
+      function selectIds(ids: string[], set: Set<string>, selector: (id: string) => string) {
+        for (const id of ids) {
+          set.add(id);
+          const el = document.querySelector<HTMLInputElement>(selector(id));
+          if (el) el.checked = true;
+        }
+      }
+
+      document.querySelectorAll<HTMLButtonElement>("[data-apply-preset]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const preset = presets.find((p) => p.id === button.dataset.applyPreset);
+          if (!preset) return;
+
+          uncheckAll();
+          selectIds(preset.tweaks, selectedTweaks, (id) => `[data-select-tweak="${id}"]`);
+          selectIds(preset.apps, selectedApps, (id) => `[data-select-app="${id}"]`);
+          selectIds(preset.tools, selectedTools, (id) => `[data-select-tool="${id}"]`);
+          updateActionBar();
+
+          document.querySelector<HTMLElement>('[data-panel-target="script"]')?.click();
+        });
+      });
+
+      // Estado en vivo (solo modo desktop): consulta perezosa, una vez por
+      // panel, para no lanzar una llamada a PowerShell por cada tweak/app en
+      // cada carga de página.
+      const checkedPanels = new Set<string>();
+
+      async function refreshTweakStatuses(category: string, force = false) {
+        if (!desktopMode) return;
+        if (checkedPanels.has(`cat-${category}`) && !force) return;
+        checkedPanels.add(`cat-${category}`);
+
+        for (const tweak of tweaks.filter((t) => t.category === category)) {
+          const badge = document.querySelector<HTMLElement>(`[data-status-tweak="${tweak.id}"]`);
+          if (!badge) continue;
+          badge.textContent = "…";
+          try {
+            const applied = await desktop.getTweakStatus(tweak.id);
+            badge.textContent = applied ? "Aplicado" : "No aplicado";
+          } catch {
+            badge.textContent = "?";
+          }
+        }
+      }
+
+      async function refreshAppStatuses(force = false) {
+        if (!desktopMode) return;
+        if (checkedPanels.has("apps") && !force) return;
+        checkedPanels.add("apps");
+
+        for (const app of apps) {
+          const badge = document.querySelector<HTMLElement>(`[data-status-app="${app.id}"]`);
+          if (!badge) continue;
+          badge.textContent = "…";
+          try {
+            const installed = await desktop.getAppStatus(app.id, preferredManager(app));
+            badge.textContent = installed ? "Instalada" : "No instalada";
+          } catch {
+            badge.textContent = "?";
+          }
+        }
+      }
+
+      document.querySelectorAll<HTMLButtonElement>("[data-refresh-status]").forEach((button) => {
+        button.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const target = button.dataset.refreshStatus!;
+          if (target === "apps") refreshAppStatuses(true);
+          else refreshTweakStatuses(target.replace("cat-", ""), true);
+        });
+      });
+
+      function exportProfile() {
+        const selection = {
+          tweaks: [...selectedTweaks],
+          apps: [...selectedApps],
+          tools: [...selectedTools],
+        };
+        const blob = new Blob([JSON.stringify(selection, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "rck-perfil.json";
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      async function importProfile(file: File) {
+        const text = await file.text();
+        const parsed = JSON.parse(text) as { tweaks?: string[]; apps?: string[]; tools?: string[] };
+
+        uncheckAll();
+        selectIds(parsed.tweaks ?? [], selectedTweaks, (id) => `[data-select-tweak="${id}"]`);
+        selectIds(parsed.apps ?? [], selectedApps, (id) => `[data-select-app="${id}"]`);
+        selectIds(parsed.tools ?? [], selectedTools, (id) => `[data-select-tool="${id}"]`);
+        updateActionBar();
+      }
+
+      document.getElementById("export-profile")!.addEventListener("click", exportProfile);
+
+      document.getElementById("import-profile")!.addEventListener("click", () => {
+        document.getElementById("import-profile-input")!.click();
+      });
+
+      document.getElementById("import-profile-input")!.addEventListener("change", async (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (file) await importProfile(file);
       });
 
       document.getElementById("copy-script")!.addEventListener("click", async () => {

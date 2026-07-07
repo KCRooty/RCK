@@ -147,4 +147,8 @@ El aspecto visual (switches tipo iOS, sidebar con iconos por categoría, acento 
 - **Fase 1** (completa): motor PowerShell + catálogo firmado + primer tweak de ejemplo.
 - **Fase 2** (completa): UI Astro dual-mode (web + desktop) + catálogo de apps + ~10 tweaks reales en debloat/privacidad/rendimiento/sistema.
 - **Fase 2b** (completa): rediseño visual inspirado en WinScript/Wintoys, subsistema de Herramientas (acciones puntuales), dashboard "Inicio" con info del sistema, panel "Ver Script" con vista previa en vivo.
-- **Fase 3**: perfiles compartibles (exportar/importar selección como `.json`), presets (`Balanced`/`Privacy`/`Gaming`/`Extreme`), modo dry-run en la UI, empaquetado real (`tauri build`) con iconos propios, navegador de apps instaladas con desinstalación (tipo Wintoys), medidores en vivo de CPU/RAM/red en el dashboard, y ampliar el catálogo (más tweaks de servicios/red/apariencia, más apps y herramientas).
+- **Fase 3** (en progreso):
+  - ✅ Presets (`catalog/presets.yaml`: Balanced/Privacidad máxima/Gaming/Extreme) — atajos de selección, no ejecutables por sí mismos, fuera del alcance de la firma criptográfica porque solo referencian ids ya firmados.
+  - ✅ Perfiles compartibles: exportar/importar la selección actual como `.json` (botones en "Ver Script").
+  - ✅ Estado en vivo de tweaks/apps en modo desktop: cada categoría/panel de apps consulta `get_tweak_status`/`get_app_status` de forma perezosa (una vez por panel, con botón de refresco manual) y muestra "Aplicado"/"Instalada" junto a cada item. El panel "Ver Script" ya cumplía el rol de modo dry-run, así que no se construyó como feature aparte.
+  - 🚧 Pendiente: empaquetado real (`tauri build`) con iconos propios, navegador de apps *instaladas* con desinstalación (tipo Wintoys — distinto del catálogo curado de apps instalables), medidores en vivo de CPU/RAM/red en el dashboard, y ampliar el catálogo (más tweaks de servicios/red/apariencia, más apps y herramientas).
