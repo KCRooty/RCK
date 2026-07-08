@@ -1,0 +1,15 @@
+id: appearance.disable-snap-flyout
+category: appearance
+risk: safe
+requires_restart: false
+description: >-
+  Desactiva el menú flotante de diseños de Snap Layouts que aparece al
+  pasar el ratón sobre el botón de maximizar. Snap normal (arrastrar a un
+  borde) sigue funcionando igual.
+targets:
+  registry:
+    - HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+script: Disable-SnapFlyout.ps1
+test: Test-SnapFlyoutDisabled
+apply: Invoke-ApplyDisableSnapFlyout
+revert: Invoke-RevertDisableSnapFlyout

@@ -1,0 +1,16 @@
+id: performance.disable-network-throttling
+category: performance
+risk: safe
+requires_restart: false
+description: >-
+  Quita el límite de "System Responsiveness" que Windows reserva para tareas
+  multimedia y desactiva el throttling de red del Multimedia Class Scheduler
+  Service. Reduce la latencia de red y audio bajo carga de CPU alta —
+  útil en juegos y videollamadas simultáneas.
+targets:
+  registry:
+    - HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile
+script: Disable-NetworkThrottling.ps1
+test: Test-NetworkThrottlingDisabled
+apply: Invoke-ApplyDisableNetworkThrottling
+revert: Invoke-RevertDisableNetworkThrottling

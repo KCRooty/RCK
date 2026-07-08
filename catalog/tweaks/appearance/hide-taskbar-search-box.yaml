@@ -1,0 +1,15 @@
+id: appearance.hide-taskbar-search-box
+category: appearance
+risk: safe
+requires_restart: false
+description: >-
+  Colapsa el cuadro de búsqueda de la barra de tareas a solo un icono,
+  liberando espacio horizontal. La búsqueda sigue funcionando igual, solo
+  cambia de una caja de texto a un icono.
+targets:
+  registry:
+    - HKCU\Software\Microsoft\Windows\CurrentVersion\Search
+script: Hide-TaskbarSearchBox.ps1
+test: Test-TaskbarSearchBoxHidden
+apply: Invoke-ApplyHideTaskbarSearchBox
+revert: Invoke-RevertHideTaskbarSearchBox

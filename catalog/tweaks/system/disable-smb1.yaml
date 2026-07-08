@@ -1,0 +1,14 @@
+id: system.disable-smb1
+category: system
+risk: moderate
+requires_restart: true
+description: >-
+  Desactiva el protocolo SMBv1, obsoleto e inseguro (vector de WannaCry/
+  EternalBlue), recomendado por Microsoft desde hace años. Solo afecta a
+  quien necesite compartir archivos con NAS o equipos Windows XP/2003 muy
+  antiguos que no soportan SMBv2/v3 — si ese es tu caso, no apliques esto.
+targets: {}
+script: Disable-Smb1.ps1
+test: Test-Smb1Disabled
+apply: Invoke-ApplyDisableSmb1
+revert: Invoke-RevertDisableSmb1

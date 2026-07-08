@@ -88,3 +88,38 @@
   subcategory: dev-tools
   winget: Notepad++.Notepad++
   choco: notepadplusplus
+
+- id: apps.godot
+  name: Godot Engine
+  description: Motor de videojuegos 2D/3D de código abierto, ligero y con GDScript.
+  subcategory: dev-tools
+  winget: GodotEngine.GodotEngine
+  choco: godot
+
+- id: apps.gitextensions
+  name: Git Extensions
+  description: Interfaz gráfica para Git, con integración de diff/merge y explorador de historial.
+  subcategory: dev-tools
+  winget: GitExtensionsTeam.GitExtensions
+  choco: gitextensions
+
+- id: apps.winmerge
+  name: WinMerge
+  description: Comparador y fusionador visual de archivos y carpetas.
+  subcategory: dev-tools
+  winget: WinMerge.WinMerge
+  choco: winmerge
+
+- id: apps.temurin-jdk
+  name: Eclipse Temurin JDK
+  description: Distribución OpenJDK (Java) de Eclipse Adoptium, la sucesora de AdoptOpenJDK.
+  subcategory: dev-tools
+  winget: EclipseAdoptium.Temurin.21.JDK
+  choco: temurin21
+
+- id: apps.dotnet-desktop-runtime
+  name: .NET Desktop Runtime
+  description: Runtime de .NET necesario para ejecutar muchas apps de escritorio modernas.
+  subcategory: dev-tools
+  winget: Microsoft.DotNet.DesktopRuntime.8
+  choco: dotnet-8.0-desktopruntime

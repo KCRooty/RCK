@@ -1,0 +1,13 @@
+id: network.disable-teredo
+category: network
+risk: safe
+requires_restart: false
+description: >-
+  Desactiva el adaptador de túnel Teredo (IPv6 sobre IPv4), que la mayoría
+  de redes domésticas no necesita y que algunos juegos/firewalls
+  interpretan mal. Revertir lo vuelve a habilitar automáticamente.
+targets: {}
+script: Disable-Teredo.ps1
+test: Test-TeredoDisabled
+apply: Invoke-ApplyDisableTeredo
+revert: Invoke-RevertDisableTeredo

@@ -1,0 +1,18 @@
+id: performance.disable-memory-integrity
+category: performance
+risk: advanced
+requires_restart: true
+description: >-
+  ADVERTENCIA DE SEGURIDAD: desactiva Memory Integrity (Core Isolation /
+  HVCI), una protección basada en virtualización contra malware a nivel de
+  kernel. Puede recuperar unos pocos FPS en juegos con anticheat pesado a
+  cambio de reducir la seguridad real del sistema. Solo tiene sentido si
+  sabes exactamente por qué lo activas — no forma parte de ningún preset
+  recomendado. Requiere reinicio para aplicar/revertir.
+targets:
+  registry:
+    - HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity
+script: Disable-MemoryIntegrity.ps1
+test: Test-MemoryIntegrityDisabled
+apply: Invoke-ApplyDisableMemoryIntegrity
+revert: Invoke-RevertDisableMemoryIntegrity

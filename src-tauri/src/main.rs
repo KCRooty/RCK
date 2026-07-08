@@ -6,6 +6,7 @@ mod backup;
 mod blacklist;
 mod catalog;
 mod commands;
+mod guard;
 mod signature;
 mod system;
 mod tools;
@@ -22,6 +23,13 @@ fn main() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
         .setup(|app| {
+            let scripts_dir = app
+                .path()
+                .resolve("scripts/powershell", tauri::path::BaseDirectory::Resource)
+                .expect("la ruta de scripts/powershell debe resolverse");
+            guard::scan_scripts_for_forbidden_patterns(&scripts_dir)
+                .expect("ningún script de RCK puede contener un patrón prohibido (ver guard.rs)");
+
             let catalog = commands::load_initial_catalog(app.handle())
                 .expect("el catálogo debe cargar y verificar su firma al arrancar");
             app.manage(CatalogState(Mutex::new(catalog)));

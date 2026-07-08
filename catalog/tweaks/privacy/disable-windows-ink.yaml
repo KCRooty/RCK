@@ -1,0 +1,16 @@
+id: privacy.disable-windows-ink
+category: privacy
+risk: safe
+requires_restart: false
+description: >-
+  Desactiva el "Panel de entrada de lápiz y de escritura a mano" y el envío
+  de datos de escritura a Microsoft para mejorar el reconocimiento. Sin
+  efecto si no usas pantalla táctil o lápiz.
+targets:
+  registry:
+    - HKCU\Software\Microsoft\Personalization\Settings
+    - HKCU\Software\Microsoft\InputPersonalization
+script: Disable-WindowsInk.ps1
+test: Test-WindowsInkDisabled
+apply: Invoke-ApplyDisableWindowsInk
+revert: Invoke-RevertDisableWindowsInk

@@ -1,0 +1,15 @@
+id: privacy.disable-error-reporting
+category: privacy
+risk: safe
+requires_restart: false
+description: >-
+  Desactiva el envío de informes de error de Windows (Windows Error
+  Reporting) a Microsoft. Los errores se siguen registrando localmente en
+  el Visor de eventos, solo deja de enviarse el volcado a Microsoft.
+targets:
+  registry:
+    - HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting
+script: Disable-ErrorReporting.ps1
+test: Test-ErrorReportingDisabled
+apply: Invoke-ApplyDisableErrorReporting
+revert: Invoke-RevertDisableErrorReporting

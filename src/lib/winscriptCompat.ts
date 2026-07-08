@@ -87,6 +87,8 @@ export const WINSCRIPT_TWEAK_MAP: Record<string, string[]> = {
   cleantemp: ["tools.clear-temp-files"],
   cleanmgr: ["tools.clear-temp-files"],
   emptyrecycle: ["tools.empty-recycle-bin"],
+  stickykeys: ["system.disable-sticky-keys"],
+  snapflyout: ["appearance.disable-snap-flyout"],
 };
 
 /**
@@ -169,6 +171,16 @@ export const WINSCRIPT_APP_MAP: Record<string, string> = {
   Rust: "apps.rust",
   SublimeText: "apps.sublimetext",
   VSCode: "apps.vscode",
+  Spicetify: "apps.spicetify",
+  Audacity: "apps.audacity",
+  EqualizerAPO: "apps.equalizerapo",
+  FFmpeg: "apps.ffmpeg",
+  "yt-dlp": "apps.yt-dlp",
+  GitExtensions: "apps.gitextensions",
+  KLite: "apps.klite-codec-pack",
+  Godot: "apps.godot",
+  WinMerge: "apps.winmerge",
+  NET8: "apps.dotnet-desktop-runtime",
 };
 
 export interface WinScriptImportResult {
