@@ -1,0 +1,15 @@
+id: debloat.disable-bing-search
+category: debloat
+risk: safe
+requires_restart: false
+description: >-
+  Quita los resultados web de Bing del menú Inicio y del buscador de la
+  barra de tareas — solo busca en archivos y apps locales. Reduce tráfico
+  de red innecesario en cada búsqueda local.
+targets:
+  registry:
+    - HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer
+script: Disable-BingSearch.ps1
+test: Test-BingSearchDisabled
+apply: Invoke-ApplyDisableBingSearch
+revert: Invoke-RevertDisableBingSearch

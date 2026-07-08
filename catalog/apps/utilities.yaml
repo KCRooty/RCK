@@ -95,3 +95,24 @@
   subcategory: utilities
   winget: Guru3D.Afterburner
   choco: msiafterburner
+
+- id: apps.nanazip
+  name: NanaZip
+  description: Compresor/descompresor de archivos moderno, sucesor de 7-Zip con integración UWP.
+  subcategory: utilities
+  winget: M2Team.NanaZip
+  choco:
+
+- id: apps.memreduct
+  name: Mem Reduct
+  description: Monitor y liberador de memoria RAM ligero (portable), útil en equipos con poca RAM.
+  subcategory: utilities
+  winget: henrypp.memreduct
+  choco: memreduct
+
+- id: apps.crystaldiskmark
+  name: CrystalDiskMark
+  description: Benchmark de velocidad de lectura/escritura de discos.
+  subcategory: utilities
+  winget: CrystalDewWorld.CrystalDiskMark
+  choco: crystaldiskmark

@@ -1,0 +1,17 @@
+id: performance.split-svchost
+category: performance
+risk: safe
+requires_restart: true
+description: >-
+  Sube el umbral de RAM a partir del cual Windows agrupa servicios dentro
+  de un mismo proceso svchost.exe, usando la RAM instalada del equipo. En
+  máquinas con 8 GB o más esto reduce drásticamente el número de procesos
+  svchost.exe visibles y el overhead de conmutación entre ellos. Requiere
+  reinicio para que el Service Control Manager vuelva a agrupar servicios.
+targets:
+  registry:
+    - HKLM\SYSTEM\CurrentControlSet\Control
+script: Split-SvchostByRam.ps1
+test: Test-SvchostSplitByRam
+apply: Invoke-ApplySplitSvchostByRam
+revert: Invoke-RevertSplitSvchostByRam

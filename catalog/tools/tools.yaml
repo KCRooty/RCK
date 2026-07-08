@@ -49,3 +49,49 @@
   requires_restart: true
   script: Optimize-NetworkStack.ps1
   run: Invoke-RunOptimizeNetworkStack
+
+- id: tools.run-sfc-scan
+  name: Comprobar archivos de sistema (SFC)
+  description: >-
+    Ejecuta `sfc /scannow`, la herramienta oficial de Microsoft que verifica
+    y repara archivos de sistema corruptos usando la copia protegida del
+    propio Windows. Puede tardar varios minutos.
+  risk: safe
+  requires_restart: false
+  script: Repair-SystemFiles.ps1
+  run: Invoke-RunSfcScan
+
+- id: tools.run-dism-restore-health
+  name: Reparar imagen de Windows (DISM)
+  description: >-
+    Ejecuta `DISM /Online /Cleanup-Image /RestoreHealth`, que repara el
+    almacén de componentes de Windows (WinSxS) descargando piezas sanas
+    desde Windows Update si hace falta. Complementa a SFC — ejecuta este
+    primero si SFC no consigue reparar algo.
+  risk: safe
+  requires_restart: false
+  script: Repair-SystemFiles.ps1
+  run: Invoke-RunDismRestoreHealth
+
+- id: tools.reset-windows-update
+  name: Restablecer componentes de Windows Update
+  description: >-
+    Detiene los servicios de Windows Update, renombra las carpetas de caché
+    `SoftwareDistribution` y `catroot2` a `.bak` (Windows las regenera solas)
+    y reinicia los servicios. Es el método oficial documentado por
+    Microsoft para arreglar Windows Update atascado — no borra, renombra ni
+    toca ningún archivo de sistema ni usa `takeown`/`icacls`.
+  risk: moderate
+  requires_restart: true
+  script: Reset-WindowsUpdate.ps1
+  run: Invoke-RunResetWindowsUpdate
+
+- id: tools.generate-battery-report
+  name: Generar informe de batería
+  description: >-
+    Genera un informe HTML detallado del estado y desgaste de la batería
+    (`powercfg /batteryreport`) y lo abre. Solo aplica a portátiles.
+  risk: safe
+  requires_restart: false
+  script: New-BatteryReport.ps1
+  run: Invoke-RunGenerateBatteryReport

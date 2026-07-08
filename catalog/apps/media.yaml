@@ -74,3 +74,52 @@
   subcategory: media
   winget: Greenshot.Greenshot
   choco: greenshot
+
+- id: apps.audacity
+  name: Audacity
+  description: Editor de audio multipista de código abierto, con soporte de plugins VST.
+  subcategory: media
+  winget: Audacity.Audacity
+  choco: audacity
+
+- id: apps.equalizerapo
+  name: Equalizer APO
+  description: Ecualizador paramétrico a nivel de sistema para Windows, de código abierto.
+  subcategory: media
+  winget: EqualizerAPO.EqualizerAPO
+  choco: equalizerapo
+
+- id: apps.klite-codec-pack
+  name: K-Lite Codec Pack (Standard)
+  description: Paquete de códecs para reproducir prácticamente cualquier formato de vídeo/audio.
+  subcategory: media
+  winget: CodecGuide.K-LiteCodecPack.Standard
+  choco: k-litecodecpackstandard
+
+- id: apps.ffmpeg
+  name: FFmpeg
+  description: Herramienta de línea de comandos para conversión y procesado de audio/vídeo.
+  subcategory: media
+  winget: Gyan.FFmpeg
+  choco: ffmpeg
+
+- id: apps.yt-dlp
+  name: yt-dlp
+  description: Descargador de vídeo/audio de línea de comandos, fork activo de youtube-dl.
+  subcategory: media
+  winget: yt-dlp.yt-dlp
+  choco: yt-dlp
+
+- id: apps.spicetify
+  name: Spicetify CLI
+  description: Personalización de temas y plugins para el cliente de escritorio de Spotify.
+  subcategory: media
+  winget: spicetify.spicetify-cli
+  choco:
+
+- id: apps.davinci-resolve
+  name: DaVinci Resolve
+  description: Suite profesional de edición de vídeo, color y audio, con versión gratuita completa.
+  subcategory: media
+  winget: Blackmagic.DaVinciResolve
+  choco:

@@ -52,9 +52,11 @@ npm run tauri:dev
 
 ## Estado
 
-✅ Fase 1, 2 y 2b: motor PowerShell + catálogo firmado (10 tweaks: debloat/privacidad/rendimiento/sistema) + catálogo de apps (13 apps vía winget/choco) + catálogo de herramientas (5 acciones puntuales: DNS, temporales, papelera, caché de iconos, índice de búsqueda) + UI dual-mode (web/desktop) con dashboard "Inicio" y panel "Ver Script", con estética inspirada en WinScript/Wintoys — todo funcionando de punta a punta.
+✅ Fase 1, 2 y 2b: motor PowerShell + catálogo firmado + UI dual-mode (web/desktop) con dashboard "Inicio", presets, perfiles compartibles y panel "Ver Script", con estética inspirada en WinScript/Wintoys — todo funcionando de punta a punta.
 
-🚧 Pendiente (Fase 3): perfiles compartibles, presets, modo dry-run en la UI, empaquetado real con iconos propios, navegador de apps instaladas (tipo Wintoys), medidores de sistema en vivo, ampliar catálogo. Ver `docs/ARCHITECTURE.md` para el roadmap completo.
+✅ Fase 3 (catálogo + hardening): **49 tweaks** (debloat/privacidad/rendimiento/sistema/red/apariencia/servicios/updates), **90 apps** (winget/choco, 9 subcategorías) y **10 herramientas** puntuales. Lista negra dura de servicios/registro (`src-tauri/src/blacklist.rs`) ampliada tras analizar herramientas "tierra quemada" reales (Platinum Optimizer, Optimizer, WinUtil) encontradas en disco, más una segunda capa de defensa (`src-tauri/src/guard.rs`) que escanea el contenido de cada script al arrancar y rechaza comandos como `takeown`/`icacls`/`bcdedit` sin importar lo que declare el YAML. Ver `docs/BLACKLIST.md` para el detalle completo. Empaquetado real verificado: `npm run tauri:build` genera `rck.exe` + instaladores NSIS/MSI funcionales.
+
+🚧 Pendiente: navegador de apps instaladas con desinstalación (tipo Wintoys, distinto del catálogo curado de instalación), medidores de CPU/RAM/red en vivo en el dashboard, iconos propios (los actuales son placeholder). Ver `docs/ARCHITECTURE.md` para el roadmap completo.
 
 ## Aviso
 

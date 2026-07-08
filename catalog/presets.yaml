@@ -23,8 +23,14 @@
     - privacy.disable-telemetry
     - privacy.disable-activity-history
     - privacy.disable-advertising-id
+    - privacy.disable-tailored-experiences
+    - privacy.disable-clipboard-cloud-sync
+    - privacy.restrict-app-permissions
+    - privacy.disable-windows-ink
+    - privacy.disable-error-reporting
     - debloat.remove-copilot
     - debloat.disable-widgets
+    - debloat.disable-bing-search
   apps:
     - apps.brave
   tools: []
@@ -35,6 +41,10 @@
   tweaks:
     - performance.enable-ultimate-performance-plan
     - performance.disable-storage-sense
+    - performance.disable-fullscreen-optimizations
+    - performance.disable-network-throttling
+    - performance.boost-game-priority
+    - performance.enable-hags
     - debloat.disable-widgets
     - system.disable-fast-startup
   apps:
@@ -49,13 +59,29 @@
     - debloat.disable-widgets
     - debloat.remove-copilot
     - debloat.remove-onedrive
+    - debloat.disable-bing-search
+    - debloat.disable-cortana-search
+    - debloat.disable-consumer-features
     - performance.disable-storage-sense
     - performance.enable-ultimate-performance-plan
+    - performance.disable-fullscreen-optimizations
+    - performance.disable-network-throttling
+    - performance.split-svchost
+    - performance.disable-mouse-acceleration
+    - performance.disable-prefetch-superfetch
     - privacy.disable-activity-history
     - privacy.disable-advertising-id
     - privacy.disable-telemetry
+    - privacy.disable-tailored-experiences
+    - privacy.disable-error-reporting
+    - privacy.disable-windows-ink
     - system.disable-fast-startup
     - system.show-file-extensions
+    - system.disable-sticky-keys
+    - system.enable-long-paths
+    - appearance.hide-taskbar-search-box
+    - appearance.disable-snap-flyout
+    - network.disable-teredo
   apps: []
   tools:
     - tools.flush-dns

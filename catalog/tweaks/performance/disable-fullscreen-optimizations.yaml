@@ -1,0 +1,16 @@
+id: performance.disable-fullscreen-optimizations
+category: performance
+risk: safe
+requires_restart: false
+description: >-
+  Fuerza a que los juegos en pantalla completa exclusiva usen ese modo real
+  en vez de que Windows lo simule en una ventana ("Fullscreen Optimizations").
+  Reduce el input lag en juegos competitivos. Es una preferencia por usuario
+  (HKCU), no rompe nada a nivel de sistema.
+targets:
+  registry:
+    - HKCU\System\GameConfigStore
+script: Disable-FullscreenOptimizations.ps1
+test: Test-FullscreenOptimizationsDisabled
+apply: Invoke-ApplyDisableFullscreenOptimizations
+revert: Invoke-RevertDisableFullscreenOptimizations
