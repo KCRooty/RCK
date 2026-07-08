@@ -4,3 +4,38 @@
   subcategory: communication
   winget: Discord.Discord
   choco: discord
+
+- id: apps.telegram
+  name: Telegram Desktop
+  description: Cliente de escritorio de la app de mensajería Telegram.
+  subcategory: communication
+  winget: Telegram.TelegramDesktop
+  choco: telegram
+
+- id: apps.signal
+  name: Signal
+  description: Mensajería con cifrado de extremo a extremo por defecto.
+  subcategory: communication
+  winget: SignalMessenger.Signal
+  choco: signal
+
+- id: apps.slack
+  name: Slack
+  description: Chat y colaboración de equipos orientado a empresas.
+  subcategory: communication
+  winget: SlackTechnologies.Slack
+  choco: slack
+
+- id: apps.zoom
+  name: Zoom
+  description: Videoconferencias, muy usado para clases y reuniones remotas.
+  subcategory: communication
+  winget: Zoom.Zoom
+  choco: zoom
+
+- id: apps.teams
+  name: Microsoft Teams
+  description: Chat, videollamadas y colaboración integrado con Microsoft 365.
+  subcategory: communication
+  winget: Microsoft.Teams
+  choco: microsoft-teams

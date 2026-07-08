@@ -32,9 +32,13 @@
       "icons/128x128.png",
       "icons/icon.ico"
     ],
-    "resources": [
-      "../catalog/**/*",
-      "../scripts/**/*"
-    ]
+    "resources": {
+      "../catalog/tweaks": "catalog/tweaks",
+      "../catalog/apps": "catalog/apps",
+      "../catalog/tools": "catalog/tools",
+      "../catalog/public_key.pem": "catalog/public_key.pem",
+      "../catalog/catalog.sig": "catalog/catalog.sig",
+      "../scripts/powershell": "scripts/powershell"
+    }
   }
 }

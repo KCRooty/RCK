@@ -11,3 +11,66 @@
   subcategory: media
   winget: PeterPawlowski.foobar2000
   choco: foobar2000
+
+- id: apps.spotify
+  name: Spotify
+  description: Streaming de música bajo demanda.
+  subcategory: media
+  winget: Spotify.Spotify
+  choco: spotify
+
+- id: apps.obs-studio
+  name: OBS Studio
+  description: Grabación y streaming de vídeo/pantalla, gratuito y de código abierto.
+  subcategory: media
+  winget: OBSProject.OBSStudio
+  choco: obs-studio
+
+- id: apps.handbrake
+  name: HandBrake
+  description: Conversor de vídeo de código abierto.
+  subcategory: media
+  winget: HandBrake.HandBrake
+  choco: handbrake
+
+- id: apps.gimp
+  name: GIMP
+  description: Editor de imágenes de código abierto, alternativa a Photoshop.
+  subcategory: media
+  winget: GIMP.GIMP
+  choco: gimp
+
+- id: apps.inkscape
+  name: Inkscape
+  description: Editor de gráficos vectoriales de código abierto, alternativa a Illustrator.
+  subcategory: media
+  winget: Inkscape.Inkscape
+  choco: inkscape
+
+- id: apps.blender
+  name: Blender
+  description: Suite de modelado, animación y render 3D de código abierto.
+  subcategory: media
+  winget: BlenderFoundation.Blender
+  choco: blender
+
+- id: apps.krita
+  name: Krita
+  description: Editor de pintura digital de código abierto, orientado a ilustración.
+  subcategory: media
+  winget: KDE.Krita
+  choco: krita
+
+- id: apps.sharex
+  name: ShareX
+  description: Capturas de pantalla, grabación de vídeo corto y subida rápida a hosts externos.
+  subcategory: media
+  winget: ShareX.ShareX
+  choco: sharex
+
+- id: apps.greenshot
+  name: Greenshot
+  description: Herramienta ligera de capturas de pantalla con anotaciones.
+  subcategory: media
+  winget: Greenshot.Greenshot
+  choco: greenshot

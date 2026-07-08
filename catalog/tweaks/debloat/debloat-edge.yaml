@@ -1,0 +1,15 @@
+id: debloat.debloat-edge
+category: debloat
+risk: moderate
+requires_restart: false
+description: >-
+  Desactiva vía política el primer-uso promocional, la barra lateral, las
+  colecciones y la telemetría de Microsoft Edge, sin desinstalarlo (Edge es
+  parte del sistema en Windows 10/11).
+targets:
+  registry:
+    - HKLM\SOFTWARE\Policies\Microsoft\Edge
+script: Debloat-Edge.ps1
+test: Test-EdgeDebloated
+apply: Invoke-ApplyDebloatEdge
+revert: Invoke-RevertDebloatEdge

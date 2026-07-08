@@ -1,0 +1,62 @@
+- id: apps.putty
+  name: PuTTY
+  description: Cliente SSH/Telnet ligero, clásico entre administradores de sistemas.
+  subcategory: networking
+  winget: PuTTY.PuTTY
+  choco: putty
+
+- id: apps.winscp
+  name: WinSCP
+  description: Cliente gráfico SFTP/SCP/FTP para transferencia de archivos.
+  subcategory: networking
+  winget: WinSCP.WinSCP
+  choco: winscp
+
+- id: apps.wireshark
+  name: Wireshark
+  description: Analizador de tráfico de red, estándar de facto para diagnóstico de paquetes.
+  subcategory: networking
+  winget: WiresharkFoundation.Wireshark
+  choco: wireshark
+
+- id: apps.protonvpn
+  name: Proton VPN
+  description: Cliente de VPN con nivel gratuito, desarrollado por Proton (Suiza).
+  subcategory: networking
+  winget: ProtonTechnologies.ProtonVPN
+  choco: protonvpn
+
+- id: apps.mullvadvpn
+  name: Mullvad VPN
+  description: VPN centrada en privacidad, sin necesidad de registrar email.
+  subcategory: networking
+  winget: MullvadVPN.MullvadVPN
+  choco: mullvadvpn
+
+- id: apps.wireguard
+  name: WireGuard
+  description: Cliente oficial del protocolo VPN WireGuard, ligero y moderno.
+  subcategory: networking
+  winget: WireGuard.WireGuard
+  choco: wireguard
+
+- id: apps.anydesk
+  name: AnyDesk
+  description: Acceso remoto y control de escritorio, alternativa ligera a TeamViewer.
+  subcategory: networking
+  winget: AnyDeskSoftwareGmbH.AnyDesk
+  choco: anydesk
+
+- id: apps.teamviewer
+  name: TeamViewer
+  description: Acceso remoto y soporte técnico a distancia.
+  subcategory: networking
+  winget: TeamViewer.TeamViewer
+  choco: teamviewer
+
+- id: apps.qbittorrent
+  name: qBittorrent
+  description: Cliente BitTorrent de código abierto, sin publicidad.
+  subcategory: networking
+  winget: qBittorrent.qBittorrent
+  choco: qbittorrent

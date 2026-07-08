@@ -18,3 +18,38 @@
   subcategory: browsers
   winget: Google.Chrome
   choco: googlechrome
+
+- id: apps.vivaldi
+  name: Vivaldi
+  description: Navegador basado en Chromium muy personalizable, orientado a power users.
+  subcategory: browsers
+  winget: Vivaldi.Vivaldi
+  choco: vivaldi
+
+- id: apps.opera
+  name: Opera
+  description: Navegador basado en Chromium con VPN gratuita integrada y sidebar de apps.
+  subcategory: browsers
+  winget: Opera.Opera
+  choco: opera
+
+- id: apps.waterfox
+  name: Waterfox
+  description: Navegador basado en Firefox orientado a privacidad y compatibilidad con extensiones clásicas.
+  subcategory: browsers
+  winget: Waterfox.Waterfox
+  choco: waterfox
+
+- id: apps.librewolf
+  name: LibreWolf
+  description: Fork de Firefox centrado en privacidad, con telemetría y rastreo eliminados por defecto.
+  subcategory: browsers
+  winget: LibreWolf.LibreWolf
+  choco: librewolf
+
+- id: apps.tor-browser
+  name: Tor Browser
+  description: Navegador basado en Firefox que enruta el tráfico a través de la red Tor.
+  subcategory: browsers
+  winget: TorProject.TorBrowser
+  choco: tor-browser

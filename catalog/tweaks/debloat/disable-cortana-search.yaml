@@ -1,0 +1,14 @@
+id: debloat.disable-cortana-search
+category: debloat
+risk: safe
+requires_restart: false
+description: >-
+  Desactiva Cortana y la búsqueda web (Bing) integrada en el menú Inicio,
+  para que solo busque archivos y apps locales.
+targets:
+  registry:
+    - HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search
+script: Disable-CortanaSearch.ps1
+test: Test-CortanaSearchDisabled
+apply: Invoke-ApplyDisableCortanaSearch
+revert: Invoke-RevertDisableCortanaSearch

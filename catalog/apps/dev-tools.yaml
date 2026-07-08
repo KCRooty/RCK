@@ -25,3 +25,66 @@
   subcategory: dev-tools
   winget: OpenJS.NodeJS.LTS
   choco: nodejs-lts
+
+- id: apps.python
+  name: Python
+  description: Lenguaje de programación de propósito general, muy usado en scripting y datos.
+  subcategory: dev-tools
+  winget: Python.Python.3.12
+  choco: python
+
+- id: apps.docker-desktop
+  name: Docker Desktop
+  description: Entorno de contenedores para desarrollo y despliegue local.
+  subcategory: dev-tools
+  winget: Docker.DockerDesktop
+  choco: docker-desktop
+
+- id: apps.github-desktop
+  name: GitHub Desktop
+  description: Cliente gráfico de Git orientado a flujos de trabajo con GitHub.
+  subcategory: dev-tools
+  winget: GitHub.GitHubDesktop
+  choco: github-desktop
+
+- id: apps.postman
+  name: Postman
+  description: Cliente para diseñar, probar y documentar APIs.
+  subcategory: dev-tools
+  winget: Postman.Postman
+  choco: postman
+
+- id: apps.ohmyposh
+  name: Oh My Posh
+  description: Motor de temas para la línea de comandos (PowerShell, Windows Terminal).
+  subcategory: dev-tools
+  winget: JanDeDobbeleer.OhMyPosh
+  choco: oh-my-posh
+
+- id: apps.rust
+  name: Rust
+  description: Toolchain del lenguaje Rust (rustup, cargo) para desarrollo de sistemas.
+  subcategory: dev-tools
+  winget: Rustlang.Rustup
+  choco: rust
+
+- id: apps.go
+  name: Go
+  description: Toolchain del lenguaje Go de Google.
+  subcategory: dev-tools
+  winget: GoLang.Go
+  choco: golang
+
+- id: apps.sublimetext
+  name: Sublime Text
+  description: Editor de texto ligero y rápido, muy usado antes de VS Code.
+  subcategory: dev-tools
+  winget: SublimeHQ.SublimeText.4
+  choco: sublimetext4
+
+- id: apps.notepadplusplus
+  name: Notepad++
+  description: Editor de texto ligero para Windows, con resaltado de sintaxis para decenas de lenguajes.
+  subcategory: dev-tools
+  winget: Notepad++.Notepad++
+  choco: notepadplusplus

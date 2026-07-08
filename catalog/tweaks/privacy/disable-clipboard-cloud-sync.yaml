@@ -1,0 +1,14 @@
+id: privacy.disable-clipboard-cloud-sync
+category: privacy
+risk: safe
+requires_restart: false
+description: >-
+  Desactiva la sincronización del historial del portapapeles con la nube y
+  el "feed de actividades" (Timeline) de Windows.
+targets:
+  registry:
+    - HKLM\SOFTWARE\Policies\Microsoft\Windows\System
+script: Disable-ClipboardCloudSync.ps1
+test: Test-ClipboardCloudSyncDisabled
+apply: Invoke-ApplyDisableClipboardCloudSync
+revert: Invoke-RevertDisableClipboardCloudSync

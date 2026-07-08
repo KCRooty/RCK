@@ -1,0 +1,15 @@
+id: privacy.disable-tailored-experiences
+category: privacy
+risk: safe
+requires_restart: false
+description: >-
+  Desactiva las "experiencias personalizadas" (anuncios y sugerencias
+  basadas en el uso del sistema) en el menú Inicio, pantalla de bloqueo y
+  Configuración.
+targets:
+  registry:
+    - HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager
+script: Disable-TailoredExperiences.ps1
+test: Test-TailoredExperiencesDisabled
+apply: Invoke-ApplyDisableTailoredExperiences
+revert: Invoke-RevertDisableTailoredExperiences

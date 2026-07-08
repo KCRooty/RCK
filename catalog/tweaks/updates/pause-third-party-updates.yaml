@@ -1,0 +1,13 @@
+id: updates.pause-third-party-updates
+category: updates
+risk: safe
+requires_restart: false
+description: >-
+  Desactiva las tareas programadas de auto-actualización en segundo plano
+  de Google Update y Adobe Acrobat/Reader. No afecta Windows Update ni
+  impide actualizar manualmente esas apps.
+targets: {}
+script: Pause-ThirdPartyUpdates.ps1
+test: Test-ThirdPartyUpdatesPaused
+apply: Invoke-ApplyPauseThirdPartyUpdates
+revert: Invoke-RevertPauseThirdPartyUpdates

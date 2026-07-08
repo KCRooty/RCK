@@ -1,0 +1,41 @@
+- id: apps.steam
+  name: Steam
+  description: Tienda y launcher de juegos más usado en PC.
+  subcategory: gaming
+  winget: Valve.Steam
+  choco: steam
+
+- id: apps.epicgames
+  name: Epic Games Launcher
+  description: Launcher de Epic Games, con regalos semanales de juegos.
+  subcategory: gaming
+  winget: EpicGames.EpicGamesLauncher
+  choco: epicgameslauncher
+
+- id: apps.gog-galaxy
+  name: GOG Galaxy
+  description: Launcher de GOG, juegos sin DRM.
+  subcategory: gaming
+  winget: GOG.Galaxy
+  choco: goggalaxy
+
+- id: apps.ubisoft-connect
+  name: Ubisoft Connect
+  description: Launcher oficial de Ubisoft.
+  subcategory: gaming
+  winget: Ubisoft.Connect
+  choco: ubisoft-connect
+
+- id: apps.prismlauncher
+  name: Prism Launcher
+  description: Launcher de código abierto para Minecraft, con gestión de mods e instancias.
+  subcategory: gaming
+  winget: PrismLauncher.PrismLauncher
+  choco: prismlauncher
+
+- id: apps.minecraft
+  name: Minecraft Launcher
+  description: Launcher oficial de Minecraft (Java/Bedrock).
+  subcategory: gaming
+  winget: Mojang.MinecraftLauncher
+  choco: minecraft-launcher

@@ -1,0 +1,16 @@
+id: performance.disable-prefetch-superfetch
+category: performance
+risk: moderate
+requires_restart: true
+description: >-
+  Desactiva Prefetch/Superfetch (SysMain). Recomendado solo en equipos con
+  SSD, donde el precaché en disco no aporta y consume E/S de fondo.
+targets:
+  services:
+    - SysMain
+  registry:
+    - HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters
+script: Disable-PrefetchSuperfetch.ps1
+test: Test-PrefetchSuperfetchDisabled
+apply: Invoke-ApplyDisablePrefetchSuperfetch
+revert: Invoke-RevertDisablePrefetchSuperfetch

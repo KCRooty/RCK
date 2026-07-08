@@ -33,4 +33,14 @@ export const TWEAK_CATEGORIES = [
   "system",
 ] as const;
 
-export const APP_SUBCATEGORIES = ["browsers", "dev-tools", "utilities", "media", "communication"] as const;
+export const APP_SUBCATEGORIES = [
+  "browsers",
+  "dev-tools",
+  "utilities",
+  "media",
+  "communication",
+  "gaming",
+  "security",
+  "networking",
+  "productivity",
+] as const;

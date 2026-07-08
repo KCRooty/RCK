@@ -1,0 +1,14 @@
+id: system.show-detailed-bsod
+category: system
+risk: safe
+requires_restart: false
+description: >-
+  Muestra información técnica detallada (código de parada, driver
+  implicado) en la pantalla azul de error, en vez del mensaje simplificado.
+targets:
+  registry:
+    - HKLM\SYSTEM\CurrentControlSet\Control\CrashControl
+script: Show-DetailedBsod.ps1
+test: Test-DetailedBsodEnabled
+apply: Invoke-ApplyShowDetailedBsod
+revert: Invoke-RevertShowDetailedBsod

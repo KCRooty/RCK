@@ -37,6 +37,10 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
   utilities: "Utilidades",
   media: "Multimedia",
   communication: "Comunicación",
+  gaming: "Gaming",
+  security: "Seguridad",
+  networking: "Redes",
+  productivity: "Ofimática",
 };
 ---
 
@@ -242,6 +246,16 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
             <button class="button" id="import-profile">Importar selección (.json)</button>
             <input type="file" id="import-profile-input" accept="application/json" hidden />
           </div>
+          <div class="tweak-card__actions" style="margin-bottom: 0.75rem;">
+            <button class="button" id="export-winscript">Exportar como WinScript (.json)</button>
+            <button class="button" id="import-winscript">Importar perfil de WinScript (.json)</button>
+            <input type="file" id="import-winscript-input" accept="application/json" hidden />
+          </div>
+          <p style="color: var(--text-dim); font-size: 0.85rem;">
+            RCK entiende los perfiles <code>.json</code> exportados por WinScript (claves planas
+            <code>"clave": true/false</code>). La correspondencia no es 1:1 perfecta — al importar verás cuántas
+            claves se reconocieron y cuáles no tienen equivalente todavía.
+          </p>
           <pre class="script-preview" id="script-preview">Selecciona algún tweak, app o herramienta para ver el script aquí.</pre>
         </section>
 
@@ -258,6 +272,7 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
       import { buildScript, downloadScript } from "../lib/scriptBuilder";
       import { desktop } from "../lib/tauriClient";
       import type { PackageManager } from "../lib/types";
+      import { isWinScriptProfile, importWinScriptProfile, exportWinScriptProfile } from "../lib/winscriptCompat";
 
       const desktopMode = isDesktop();
       const selectedTweaks = new Set<string>();
@@ -449,6 +464,61 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
       document.getElementById("import-profile-input")!.addEventListener("change", async (e) => {
         const file = (e.target as HTMLInputElement).files?.[0];
         if (file) await importProfile(file);
+      });
+
+      function exportWinScript() {
+        const profile = exportWinScriptProfile({ tweaks: [...selectedTweaks], apps: [...selectedApps] });
+        const blob = new Blob([JSON.stringify(profile, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "rck-winscript.json";
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      async function importWinScript(file: File) {
+        const text = await file.text();
+        const parsed = JSON.parse(text);
+
+        if (!isWinScriptProfile(parsed)) {
+          alert("Ese archivo no parece un perfil de WinScript (se esperaba un objeto plano de claves true/false).");
+          return;
+        }
+
+        const result = importWinScriptProfile(parsed);
+
+        uncheckAll();
+        selectIds(result.tweaks, selectedTweaks, (id) => `[data-select-tweak="${id}"]`);
+        selectIds(result.apps, selectedApps, (id) => `[data-select-app="${id}"]`);
+        updateActionBar();
+
+        const lines = [
+          `Importado desde WinScript: ${result.matchedKeys.length} clave(s) reconocida(s) -> ${result.tweaks.length} tweak(s) + ${result.apps.length} app(s).`,
+        ];
+        if (result.protectedKeys.length > 0) {
+          lines.push(
+            `Omitidas por protección (ver docs/BLACKLIST.md): ${result.protectedKeys.join(", ")}.`
+          );
+        }
+        if (result.unsupportedKeys.length > 0) {
+          lines.push(`Sin equivalente todavía en RCK (${result.unsupportedKeys.length}): ${result.unsupportedKeys.join(", ")}.`);
+        }
+        alert(lines.join("\n\n"));
+
+        document.querySelector<HTMLElement>('[data-panel-target="script"]')?.click();
+      }
+
+      document.getElementById("export-winscript")!.addEventListener("click", exportWinScript);
+
+      document.getElementById("import-winscript")!.addEventListener("click", () => {
+        document.getElementById("import-winscript-input")!.click();
+      });
+
+      document.getElementById("import-winscript-input")!.addEventListener("change", async (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (file) await importWinScript(file);
+        (e.target as HTMLInputElement).value = "";
       });
 
       document.getElementById("copy-script")!.addEventListener("click", async () => {

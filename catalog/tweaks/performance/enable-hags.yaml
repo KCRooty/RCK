@@ -1,0 +1,15 @@
+id: performance.enable-hags
+category: performance
+risk: moderate
+requires_restart: true
+description: >-
+  Activa Hardware-Accelerated GPU Scheduling (HAGS), delega la gestión de
+  cola de la GPU al propio hardware. Puede mejorar latencia en juegos con
+  GPUs y drivers recientes; requiere reiniciar.
+targets:
+  registry:
+    - HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers
+script: Enable-Hags.ps1
+test: Test-HagsEnabled
+apply: Invoke-ApplyEnableHags
+revert: Invoke-RevertEnableHags
