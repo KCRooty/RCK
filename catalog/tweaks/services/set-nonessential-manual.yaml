@@ -1,0 +1,20 @@
+id: services.set-nonessential-manual
+category: services
+risk: advanced
+requires_restart: false
+description: >-
+  Pone en modo Manual (no deshabilitado) un grupo acotado de servicios no
+  esenciales que rara vez se usan: Fax, Registro remoto, Mapas sin conexión,
+  Wallet y Telemetría de demostración de retail. Nunca toca servicios de la
+  lista negra (docs/BLACKLIST.md).
+targets:
+  services:
+    - Fax
+    - RemoteRegistry
+    - MapsBroker
+    - WalletService
+    - RetailDemo
+script: Set-NonEssentialManual.ps1
+test: Test-NonEssentialManualSet
+apply: Invoke-ApplySetNonEssentialManual
+revert: Invoke-RevertSetNonEssentialManual

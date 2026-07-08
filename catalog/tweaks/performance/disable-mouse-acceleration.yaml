@@ -1,0 +1,14 @@
+id: performance.disable-mouse-acceleration
+category: performance
+risk: safe
+requires_restart: false
+description: >-
+  Desactiva la aceleración del puntero ("Enhance pointer precision"), para
+  un movimiento de ratón 1:1 predecible — preferido en juegos competitivos.
+targets:
+  registry:
+    - HKCU\Control Panel\Mouse
+script: Disable-MouseAcceleration.ps1
+test: Test-MouseAccelerationDisabled
+apply: Invoke-ApplyDisableMouseAcceleration
+revert: Invoke-RevertDisableMouseAcceleration

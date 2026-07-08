@@ -18,3 +18,80 @@
   subcategory: utilities
   winget: voidtools.Everything
   choco: everything
+
+- id: apps.winrar
+  name: WinRAR
+  description: Compresor/descompresor de archivos clásico, soporta RAR y ZIP.
+  subcategory: utilities
+  winget: RARLab.WinRAR
+  choco: winrar
+
+- id: apps.cpu-z
+  name: CPU-Z
+  description: Información detallada de CPU, placa base y memoria en tiempo real.
+  subcategory: utilities
+  winget: CPUID.CPU-Z
+  choco: cpu-z
+
+- id: apps.gpu-z
+  name: GPU-Z
+  description: Información detallada de la GPU y monitorización en tiempo real.
+  subcategory: utilities
+  winget: TechPowerUp.GPU-Z
+  choco: gpu-z
+
+- id: apps.hwinfo
+  name: HWiNFO
+  description: Diagnóstico y monitorización de hardware muy completo.
+  subcategory: utilities
+  winget: REALiX.HWiNFO
+  choco: hwinfo
+
+- id: apps.crystaldiskinfo
+  name: CrystalDiskInfo
+  description: Monitorización de salud S.M.A.R.T. de discos duros y SSD.
+  subcategory: utilities
+  winget: CrystalDewWorld.CrystalDiskInfo
+  choco: crystaldiskinfo
+
+- id: apps.ccleaner
+  name: CCleaner
+  description: Limpieza de archivos temporales y gestión de programas de inicio.
+  subcategory: utilities
+  winget: Piriform.CCleaner
+  choco: ccleaner
+
+- id: apps.windirstat
+  name: WinDirStat
+  description: Visualización gráfica del uso de espacio en disco por carpeta.
+  subcategory: utilities
+  winget: WinDirStat.WinDirStat
+  choco: windirstat
+
+- id: apps.rainmeter
+  name: Rainmeter
+  description: Widgets personalizables de escritorio (recursos del sistema, notas, etc.).
+  subcategory: utilities
+  winget: Rainmeter.Rainmeter
+  choco: rainmeter
+
+- id: apps.autohotkey
+  name: AutoHotkey
+  description: Automatización y macros mediante scripts, muy usado para atajos de teclado personalizados.
+  subcategory: utilities
+  winget: AutoHotkey.AutoHotkey
+  choco: autohotkey
+
+- id: apps.flow-launcher
+  name: Flow Launcher
+  description: Lanzador de aplicaciones y comandos rápido, tipo PowerToys Run/Alfred.
+  subcategory: utilities
+  winget: Flow-Launcher.Flow-Launcher
+  choco: flow-launcher
+
+- id: apps.afterburner
+  name: MSI Afterburner
+  description: Overclock y monitorización de GPU, con overlay en juegos (RivaTuner incluido).
+  subcategory: utilities
+  winget: Guru3D.Afterburner
+  choco: msiafterburner

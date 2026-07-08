@@ -1,0 +1,13 @@
+id: debloat.remove-legacy-features
+category: debloat
+risk: moderate
+requires_restart: true
+description: >-
+  Elimina las características opcionales de Internet Explorer 11 y de
+  Fax/Escáner, ambas obsoletas y raramente usadas en Windows 10/11.
+  Requiere reiniciar para completarse.
+targets: {}
+script: Remove-LegacyFeatures.ps1
+test: Test-LegacyFeaturesRemoved
+apply: Invoke-ApplyRemoveLegacyFeatures
+revert: Invoke-RevertRemoveLegacyFeatures

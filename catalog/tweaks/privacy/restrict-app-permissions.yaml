@@ -1,0 +1,16 @@
+id: privacy.restrict-app-permissions
+category: privacy
+risk: moderate
+requires_restart: false
+description: >-
+  Deniega por defecto el acceso de las apps de Microsoft Store a ubicación,
+  cámara, micrófono, contactos, calendario, historial de llamadas,
+  mensajería, información de cuenta y sensores de movimiento. Las apps de
+  escritorio (win32) no se ven afectadas.
+targets:
+  registry:
+    - HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy
+script: Restrict-AppPermissions.ps1
+test: Test-AppPermissionsRestricted
+apply: Invoke-ApplyRestrictAppPermissions
+revert: Invoke-RevertRestrictAppPermissions

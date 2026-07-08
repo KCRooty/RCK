@@ -1,0 +1,14 @@
+id: appearance.taskbar-align-left
+category: appearance
+risk: safe
+requires_restart: false
+description: >-
+  Alinea los iconos de la barra de tareas a la izquierda (estilo Windows
+  10) en vez del centrado por defecto de Windows 11.
+targets:
+  registry:
+    - HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+script: Set-TaskbarAlignLeft.ps1
+test: Test-TaskbarAlignedLeft
+apply: Invoke-ApplyTaskbarAlignLeft
+revert: Invoke-RevertTaskbarAlignLeft

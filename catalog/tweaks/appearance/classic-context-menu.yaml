@@ -1,0 +1,14 @@
+id: appearance.classic-context-menu
+category: appearance
+risk: safe
+requires_restart: false
+description: >-
+  Restaura el menú contextual clásico de Windows 10 (con todas las
+  opciones visibles de inmediato) en vez del menú reducido de Windows 11.
+targets:
+  registry:
+    - HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32
+script: Set-ClassicContextMenu.ps1
+test: Test-ClassicContextMenuEnabled
+apply: Invoke-ApplyClassicContextMenu
+revert: Invoke-RevertClassicContextMenu

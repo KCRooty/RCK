@@ -1,0 +1,15 @@
+id: debloat.disable-recall
+category: debloat
+risk: moderate
+requires_restart: false
+description: >-
+  Desactiva Windows Recall (capturas periódicas de pantalla con IA) vía
+  política de grupo. No borra capturas ya existentes, solo detiene la
+  captura futura.
+targets:
+  registry:
+    - HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsAI
+script: Disable-Recall.ps1
+test: Test-RecallDisabled
+apply: Invoke-ApplyDisableRecall
+revert: Invoke-RevertDisableRecall

@@ -1,0 +1,15 @@
+id: appearance.disable-action-center
+category: appearance
+risk: safe
+requires_restart: false
+description: >-
+  Desactiva el Centro de actividades/notificaciones (icono de la bandeja
+  del sistema y el panel lateral). Las notificaciones de apps individuales
+  no se ven afectadas.
+targets:
+  registry:
+    - HKCU\Software\Policies\Microsoft\Windows\Explorer
+script: Disable-ActionCenter.ps1
+test: Test-ActionCenterDisabled
+apply: Invoke-ApplyDisableActionCenter
+revert: Invoke-RevertDisableActionCenter

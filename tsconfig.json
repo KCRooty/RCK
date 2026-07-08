@@ -6,5 +6,6 @@
     "paths": {
       "@/*": ["src/*"]
     }
-  }
+  },
+  "exclude": ["src-tauri", "node_modules", "dist"]
 }

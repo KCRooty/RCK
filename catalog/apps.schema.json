@@ -19,7 +19,7 @@
     },
     "subcategory": {
       "type": "string",
-      "enum": ["browsers", "dev-tools", "utilities", "media", "communication"]
+      "enum": ["browsers", "dev-tools", "utilities", "media", "communication", "gaming", "security", "networking", "productivity"]
     },
     "winget": {
       "type": "string",

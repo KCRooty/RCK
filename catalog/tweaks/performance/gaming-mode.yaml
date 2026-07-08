@@ -1,0 +1,15 @@
+id: performance.gaming-mode
+category: performance
+risk: safe
+requires_restart: false
+description: >-
+  Desactiva la grabación en segundo plano de Xbox Game Bar (Game DVR), que
+  consume CPU/GPU incluso sin usarla, y confirma que el Modo Juego de
+  Windows esté activo.
+targets:
+  registry:
+    - HKCU\System\GameConfigStore
+script: Enable-GamingMode.ps1
+test: Test-GamingModeEnabled
+apply: Invoke-ApplyGamingMode
+revert: Invoke-RevertGamingMode

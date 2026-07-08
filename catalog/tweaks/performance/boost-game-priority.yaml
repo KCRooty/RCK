@@ -1,0 +1,16 @@
+id: performance.boost-game-priority
+category: performance
+risk: moderate
+requires_restart: false
+description: >-
+  Asigna prioridad de CPU "Alta" (Image File Execution Options) a una
+  lista curada de ejecutables de juegos populares actuales, para que el
+  planificador de Windows les dé preferencia sobre procesos en segundo
+  plano. No afecta a procesos que no estén en la lista.
+targets:
+  registry:
+    - HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options
+script: Set-BoostGamePriority.ps1
+test: Test-GamePriorityBoosted
+apply: Invoke-ApplyBoostGamePriority
+revert: Invoke-RevertBoostGamePriority

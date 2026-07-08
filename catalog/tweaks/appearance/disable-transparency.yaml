@@ -1,0 +1,15 @@
+id: appearance.disable-transparency
+category: appearance
+risk: safe
+requires_restart: false
+description: >-
+  Desactiva los efectos de transparencia (Acrylic/Mica) en la barra de
+  tareas, menú Inicio y ventanas. Puede mejorar el rendimiento en GPUs
+  integradas modestas.
+targets:
+  registry:
+    - HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize
+script: Disable-Transparency.ps1
+test: Test-TransparencyDisabled
+apply: Invoke-ApplyDisableTransparency
+revert: Invoke-RevertDisableTransparency

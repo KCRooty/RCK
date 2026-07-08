@@ -1,0 +1,12 @@
+id: network.set-dns-cloudflare
+category: network
+risk: safe
+requires_restart: false
+description: >-
+  Configura Cloudflare (1.1.1.1 / 1.0.0.1) como DNS en el adaptador de red
+  activo. Revertir vuelve a asignación automática por DHCP.
+targets: {}
+script: Set-DnsCloudflare.ps1
+test: Test-DnsCloudflareSet
+apply: Invoke-ApplySetDnsCloudflare
+revert: Invoke-RevertSetDnsCloudflare

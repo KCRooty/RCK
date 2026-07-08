@@ -1,0 +1,15 @@
+id: debloat.disable-consumer-features
+category: debloat
+risk: safe
+requires_restart: false
+description: >-
+  Desactiva las "características de consumidor" de Windows: apps
+  sugeridas/instaladas automáticamente en el menú Inicio y contenido
+  promocionado del sistema.
+targets:
+  registry:
+    - HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent
+script: Disable-ConsumerFeatures.ps1
+test: Test-ConsumerFeaturesDisabled
+apply: Invoke-ApplyDisableConsumerFeatures
+revert: Invoke-RevertDisableConsumerFeatures

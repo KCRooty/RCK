@@ -1,0 +1,14 @@
+id: appearance.enable-dark-mode
+category: appearance
+risk: safe
+requires_restart: false
+description: >-
+  Activa el modo oscuro tanto para apps como para el propio sistema
+  (Explorador, Configuración, menú Inicio).
+targets:
+  registry:
+    - HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize
+script: Enable-DarkMode.ps1
+test: Test-DarkModeEnabled
+apply: Invoke-ApplyEnableDarkMode
+revert: Invoke-RevertEnableDarkMode

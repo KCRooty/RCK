@@ -1,0 +1,27 @@
+- id: apps.libreoffice
+  name: LibreOffice
+  description: Suite ofimática completa de código abierto, compatible con formatos de Office.
+  subcategory: productivity
+  winget: TheDocumentFoundation.LibreOffice
+  choco: libreoffice-fresh
+
+- id: apps.obsidian
+  name: Obsidian
+  description: Editor de notas en Markdown con enlaces bidireccionales y grafo de conocimiento.
+  subcategory: productivity
+  winget: Obsidian.Obsidian
+  choco: obsidian
+
+- id: apps.adobe-acrobat-reader
+  name: Adobe Acrobat Reader
+  description: Lector de PDF más extendido.
+  subcategory: productivity
+  winget: Adobe.Acrobat.Reader.64-bit
+  choco: adobereader
+
+- id: apps.sumatrapdf
+  name: SumatraPDF
+  description: Lector de PDF ligero y rápido, alternativa minimalista a Acrobat.
+  subcategory: productivity
+  winget: SumatraPDF.SumatraPDF
+  choco: sumatrapdf

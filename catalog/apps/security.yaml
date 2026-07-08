@@ -1,0 +1,27 @@
+- id: apps.bitwarden
+  name: Bitwarden
+  description: Gestor de contraseñas de código abierto, con cliente de escritorio y extensión de navegador.
+  subcategory: security
+  winget: Bitwarden.Bitwarden
+  choco: bitwarden
+
+- id: apps.keepassxc
+  name: KeePassXC
+  description: Gestor de contraseñas local, sin dependencia de la nube, de código abierto.
+  subcategory: security
+  winget: KeePassXCTeam.KeePassXC
+  choco: keepassxc
+
+- id: apps.malwarebytes
+  name: Malwarebytes
+  description: Escáner anti-malware complementario al antivirus del sistema.
+  subcategory: security
+  winget: Malwarebytes.Malwarebytes
+  choco: malwarebytes
+
+- id: apps.veracrypt
+  name: VeraCrypt
+  description: Cifrado de discos y contenedores de archivos, de código abierto.
+  subcategory: security
+  winget: IDRIX.VeraCrypt
+  choco: veracrypt

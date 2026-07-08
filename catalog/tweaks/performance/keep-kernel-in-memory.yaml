@@ -1,0 +1,15 @@
+id: performance.keep-kernel-in-memory
+category: performance
+risk: moderate
+requires_restart: true
+description: >-
+  Impide que el kernel y los drivers se paginen a disco (DisablePagingExecutive),
+  manteniéndolos siempre en RAM. Recomendado solo con 16 GB+ de RAM; en
+  equipos con poca RAM puede ser contraproducente.
+targets:
+  registry:
+    - HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management
+script: Set-KeepKernelInMemory.ps1
+test: Test-KernelKeptInMemory
+apply: Invoke-ApplyKeepKernelInMemory
+revert: Invoke-RevertKeepKernelInMemory

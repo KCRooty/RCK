@@ -37,3 +37,15 @@
   requires_restart: false
   script: Rebuild-SearchIndex.ps1
   run: Invoke-RunRebuildSearchIndex
+
+- id: tools.optimize-network-stack
+  name: Optimizar pila de red
+  description: >-
+    Ajusta el auto-tuning y RSS de TCP, libera la reserva de ancho de banda
+    QoS al 0%, y reinicia el catálogo Winsock y la caché DNS. Acción puntual
+    inspirada en el script "El Nexo Net Optimizer" — no persiste como
+    tweak reversible, solo re-ejecútala si algo va mal con la red.
+  risk: moderate
+  requires_restart: true
+  script: Optimize-NetworkStack.ps1
+  run: Invoke-RunOptimizeNetworkStack

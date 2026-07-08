@@ -1,0 +1,17 @@
+id: performance.increase-input-queue-size
+category: performance
+risk: safe
+requires_restart: true
+description: >-
+  Aumenta el tamaño de la cola de datos de teclado y ratón (de 0x64 a 0x1E
+  en hexadecimal invertido: 30 elementos), reduciendo la pérdida de
+  eventos de entrada en ráfagas rápidas — útil en juegos competitivos con
+  polling rate alto.
+targets:
+  registry:
+    - HKLM\SYSTEM\CurrentControlSet\Services\kbdclass\Parameters
+    - HKLM\SYSTEM\CurrentControlSet\Services\mouclass\Parameters
+script: Increase-InputQueueSize.ps1
+test: Test-InputQueueSizeIncreased
+apply: Invoke-ApplyIncreaseInputQueueSize
+revert: Invoke-RevertIncreaseInputQueueSize
