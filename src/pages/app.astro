@@ -76,6 +76,9 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
         <div class="sidebar__item" data-panel-target="tools">
           <span class="sidebar__item-icon">🛠️</span> Herramientas
         </div>
+        <div class="sidebar__item" data-panel-target="services">
+          <span class="sidebar__item-icon">🧰</span> Servicios
+        </div>
         <div class="sidebar__item" data-panel-target="script">
           <span class="sidebar__item-icon">📜</span> Ver Script
         </div>
@@ -123,9 +126,9 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
             {presets.map((preset) => (
               <div class="tweak-card" data-preset-id={preset.id}>
                 <div class="tweak-card__body">
-                  <strong>{preset.name}</strong>
-                  <p style="color: var(--text-dim); margin: 0.25rem 0 0;">{preset.description}</p>
-                  <p style="color: var(--text-dim); margin: 0.25rem 0 0; font-size: 0.8rem;">
+                  <div class="tweak-card__title">{preset.name}</div>
+                  <p class="tweak-card__desc">{preset.description}</p>
+                  <p class="tweak-card__desc" style="font-size: 0.78rem;">
                     {preset.tweaks.length} tweak(s) · {preset.apps.length} app(s) · {preset.tools.length} herramienta(s)
                   </p>
                 </div>
@@ -152,13 +155,13 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
               {tweaksByCategory(cat).map((tweak) => (
                 <div class="tweak-card" data-tweak-id={tweak.id}>
                   <div class="tweak-card__body">
-                    <strong>
-                      {tweak.id}
+                    <div class="tweak-card__title">{tweak.id}</div>
+                    <div class="tweak-card__meta">
                       <span class={`risk-badge risk-badge--${tweak.risk}`}>{tweak.risk}</span>
-                      {tweak.requires_restart && <span class="risk-badge risk-badge--neutral">requiere reinicio</span>}
-                      <span class="risk-badge risk-badge--neutral" data-status-tweak={tweak.id}>—</span>
-                    </strong>
-                    <p style="color: var(--text-dim); margin: 0.25rem 0 0;">{tweak.description}</p>
+                      {tweak.requires_restart && <span class="restart-hint" title="Requiere reinicio">↻ reinicio</span>}
+                      <span class="risk-badge risk-badge--neutral" data-status-tweak={tweak.id} hidden></span>
+                    </div>
+                    <p class="tweak-card__desc">{tweak.description}</p>
                   </div>
                   <div class="tweak-card__actions">
                     <label class="switch">
@@ -185,11 +188,11 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
                 {appsBySubcategory(sub).map((app) => (
                   <div class="tweak-card" data-app-id={app.id}>
                     <div class="tweak-card__body">
-                      <strong>
+                      <div class="tweak-card__title">
                         {app.name}
-                        <span class="risk-badge risk-badge--neutral" data-status-app={app.id}>—</span>
-                      </strong>
-                      <p style="color: var(--text-dim); margin: 0.25rem 0 0;">{app.description}</p>
+                        <span class="risk-badge risk-badge--neutral" data-status-app={app.id} hidden></span>
+                      </div>
+                      <p class="tweak-card__desc">{app.description}</p>
                     </div>
                     <div class="tweak-card__actions">
                       <label class="switch">
@@ -214,11 +217,11 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
             {tools.map((tool) => (
               <div class="tweak-card" data-tool-id={tool.id}>
                 <div class="tweak-card__body">
-                  <strong>
-                    {tool.name}
+                  <div class="tweak-card__title">{tool.name}</div>
+                  <div class="tweak-card__meta">
                     <span class={`risk-badge risk-badge--${tool.risk}`}>{tool.risk}</span>
-                  </strong>
-                  <p style="color: var(--text-dim); margin: 0.25rem 0 0;">{tool.description}</p>
+                  </div>
+                  <p class="tweak-card__desc">{tool.description}</p>
                 </div>
                 <div class="tweak-card__actions">
                   <label class="switch">
@@ -231,13 +234,33 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
           </div>
         </section>
 
+        <!-- Servicios -->
+        <section class="panel" data-panel="services" hidden>
+          <div class="main__header">
+            <h1>🧰 Servicios</h1>
+            <span class="main__count" id="services-count">
+              <button class="button" id="services-refresh" style="padding: 0.3rem 0.75rem; font-size: 0.8rem;">🔄 Actualizar</button>
+            </span>
+          </div>
+          <p style="color: var(--text-dim); font-size: 0.85rem;">
+            Lectura en vivo de <code>Get-Service</code>, no del catálogo firmado. Los servicios protegidos (ver
+            <code>docs/BLACKLIST.md</code>) se muestran pero RCK rechaza cualquier cambio sobre ellos. Solo se puede
+            cambiar el <strong>tipo de inicio</strong> — no hay start/stop en caliente desde aquí.
+          </p>
+          <input type="text" id="services-search" placeholder="Buscar servicios..." class="services-search" />
+          <div id="services-list" class="tweak-list">
+            <p style="color: var(--text-dim);">Pulsa 🔄 Actualizar para cargar la lista de servicios.</p>
+          </div>
+        </section>
+
         <!-- Ver Script -->
         <section class="panel" data-panel="script" hidden>
           <div class="main__header">
             <h1>📜 Ver Script</h1>
           </div>
           <p style="color: var(--text-dim);">
-            Así se ve el <code>.ps1</code> que se generaría con tu selección actual — igual se aplique en vivo (desktop) o se descargue (web).
+            Así se ve el <code>.ps1</code> que se generaría con tu selección actual. Puedes editarlo libremente —
+            quitar líneas, añadir las tuyas — y luego ejecutar exactamente lo que hayas escrito.
           </p>
           <div class="tweak-card__actions" style="margin-bottom: 0.75rem;">
             <button class="button" id="copy-script">Copiar</button>
@@ -256,7 +279,18 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
             <code>"clave": true/false</code>). La correspondencia no es 1:1 perfecta — al importar verás cuántas
             claves se reconocieron y cuáles no tienen equivalente todavía.
           </p>
-          <pre class="script-preview" id="script-preview">Selecciona algún tweak, app o herramienta para ver el script aquí.</pre>
+          <textarea class="script-preview" id="script-preview" spellcheck="false" rows="18">Selecciona algún tweak, app o herramienta para ver el script aquí.</textarea>
+          <div class="tweak-card__actions" style="margin-top: 0.75rem;">
+            <button class="button" id="regenerate-script">↻ Regenerar desde selección</button>
+            <button class="button button--primary" id="run-script" hidden>▶ Ejecutar en este PC</button>
+          </div>
+          <p class="script-warning" id="run-script-warning" hidden>
+            ⚠️ Esto ejecuta exactamente el texto de arriba, tal cual, con permisos de administrador. No pasa por la
+            lista negra de tweaks ni por la firma del catálogo — solo se comprueba contra los mismos patrones
+            catastróficos prohibidos en todo RCK (<code>guard.rs</code>: takeown/icacls/bcdedit, borrados bajo
+            System32...). Revísalo antes de pulsar.
+          </p>
+          <pre class="script-preview" id="run-script-output" hidden></pre>
         </section>
 
         <div class="action-bar" id="action-bar">
@@ -293,11 +327,20 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
         };
       }
 
+      // El textarea de "Ver Script" se regenera automáticamente al cambiar
+      // la selección — salvo que el usuario ya lo esté editando a mano, en
+      // cuyo caso solo "↻ Regenerar" lo vuelve a pisar.
+      const scriptPreview = document.getElementById("script-preview") as HTMLTextAreaElement;
+      let scriptEdited = false;
+      scriptPreview.addEventListener("input", () => {
+        scriptEdited = true;
+      });
+
       function refreshScriptPreview() {
-        const preview = document.getElementById("script-preview")!;
+        if (scriptEdited) return;
         const selection = currentSelection();
         const total = selection.tweaks.length + selection.apps.length + selection.tools.length;
-        preview.textContent =
+        scriptPreview.value =
           total === 0
             ? "Selecciona algún tweak, app o herramienta para ver el script aquí."
             : buildScript(selection);
@@ -313,6 +356,7 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
           });
           if (target === "script") refreshScriptPreview();
           if (target === "apps") refreshAppStatuses();
+          if (target === "services") loadServices();
           if (target?.startsWith("cat-")) refreshTweakStatuses(target.replace("cat-", ""));
         });
       });
@@ -392,6 +436,7 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
         for (const tweak of tweaks.filter((t) => t.category === category)) {
           const badge = document.querySelector<HTMLElement>(`[data-status-tweak="${tweak.id}"]`);
           if (!badge) continue;
+          badge.hidden = false;
           badge.textContent = "…";
           try {
             const applied = await desktop.getTweakStatus(tweak.id);
@@ -410,6 +455,7 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
         for (const app of apps) {
           const badge = document.querySelector<HTMLElement>(`[data-status-app="${app.id}"]`);
           if (!badge) continue;
+          badge.hidden = false;
           badge.textContent = "…";
           try {
             const installed = await desktop.getAppStatus(app.id, preferredManager(app));
@@ -522,12 +568,44 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
       });
 
       document.getElementById("copy-script")!.addEventListener("click", async () => {
-        const text = document.getElementById("script-preview")!.textContent ?? "";
-        await navigator.clipboard.writeText(text);
+        await navigator.clipboard.writeText(scriptPreview.value);
       });
 
       document.getElementById("download-script")!.addEventListener("click", () => {
-        downloadScript(buildScript(currentSelection()));
+        downloadScript(scriptPreview.value);
+      });
+
+      document.getElementById("regenerate-script")!.addEventListener("click", () => {
+        scriptEdited = false;
+        refreshScriptPreview();
+      });
+
+      const runScriptButton = document.getElementById("run-script") as HTMLButtonElement;
+      const runScriptWarning = document.getElementById("run-script-warning")!;
+      const runScriptOutput = document.getElementById("run-script-output")!;
+
+      if (desktopMode) {
+        runScriptButton.hidden = false;
+        runScriptWarning.hidden = false;
+      }
+
+      runScriptButton.addEventListener("click", async () => {
+        if (!confirm("Esto va a ejecutar el script tal cual está escrito arriba, con permisos de administrador. ¿Continuar?")) {
+          return;
+        }
+        runScriptButton.disabled = true;
+        runScriptButton.textContent = "Ejecutando...";
+        runScriptOutput.hidden = false;
+        runScriptOutput.textContent = "Ejecutando...";
+        try {
+          const output = await desktop.runRawScript(scriptPreview.value);
+          runScriptOutput.textContent = output.trim() || "(el script no imprimió nada por consola)";
+        } catch (err) {
+          runScriptOutput.textContent = `Error: ${err}`;
+        } finally {
+          runScriptButton.disabled = false;
+          runScriptButton.textContent = "▶ Ejecutar en este PC";
+        }
       });
 
       document.getElementById("action-button")!.addEventListener("click", async () => {
@@ -574,6 +652,78 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
           console.error(err);
         }
       }
+
+      // Servicios: lectura en vivo (no forma parte del catálogo firmado).
+      let servicesLoaded = false;
+
+      function renderServiceRow(svc: { name: string; display_name: string; status: string; start_type: string }) {
+        const startTypes = ["Automatic", "Manual", "Disabled"];
+        const labels: Record<string, string> = { Automatic: "Automático", Manual: "Manual", Disabled: "Deshabilitado" };
+        const options = startTypes
+          .map((t) => `<option value="${t}" ${t === svc.start_type ? "selected" : ""}>${labels[t]}</option>`)
+          .join("");
+        return `
+          <div class="tweak-card" data-service-row data-service-search="${(svc.display_name + " " + svc.name).toLowerCase()}">
+            <div class="tweak-card__body">
+              <div class="tweak-card__title">${svc.display_name}</div>
+              <div class="tweak-card__meta">
+                <span class="risk-badge risk-badge--neutral">${svc.name}</span>
+                <span class="risk-badge risk-badge--neutral">${svc.status}</span>
+              </div>
+            </div>
+            <div class="tweak-card__actions">
+              <select class="services-select" data-service-select="${svc.name}">${options}</select>
+            </div>
+          </div>`;
+      }
+
+      async function loadServices(force = false) {
+        if (servicesLoaded && !force) return;
+        if (!desktopMode) {
+          document.getElementById("services-list")!.innerHTML =
+            '<p style="color: var(--text-dim);">Solo disponible en la app de escritorio.</p>';
+          return;
+        }
+
+        const list = document.getElementById("services-list")!;
+        const count = document.getElementById("services-count")!;
+        list.innerHTML = '<p style="color: var(--text-dim);">Cargando servicios...</p>';
+
+        try {
+          const services = await desktop.listServices();
+          servicesLoaded = true;
+          list.innerHTML = services.map(renderServiceRow).join("");
+          count.insertAdjacentHTML("afterbegin", `<span style="margin-right: 0.75rem;">${services.length} servicios</span>`);
+
+          list.querySelectorAll<HTMLSelectElement>("[data-service-select]").forEach((select) => {
+            const previousValue = select.value;
+            select.addEventListener("change", async () => {
+              const name = select.dataset.serviceSelect!;
+              const newValue = select.value;
+              select.disabled = true;
+              try {
+                await desktop.setServiceStartup(name, newValue);
+              } catch (err) {
+                alert(String(err));
+                select.value = previousValue;
+              } finally {
+                select.disabled = false;
+              }
+            });
+          });
+        } catch (err) {
+          list.innerHTML = `<p style="color: var(--text-dim);">No se pudo cargar la lista de servicios: ${err}</p>`;
+        }
+      }
+
+      document.getElementById("services-refresh")!.addEventListener("click", () => loadServices(true));
+
+      document.getElementById("services-search")!.addEventListener("input", (e) => {
+        const query = (e.target as HTMLInputElement).value.trim().toLowerCase();
+        document.querySelectorAll<HTMLElement>("[data-service-row]").forEach((row) => {
+          row.hidden = query.length > 0 && !(row.dataset.serviceSearch ?? "").includes(query);
+        });
+      });
 
       loadSystemInfo();
       updateActionBar();

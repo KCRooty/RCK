@@ -59,4 +59,11 @@ export interface SystemInfo {
   ram_total_gb: number;
 }
 
+export interface ServiceInfo {
+  name: string;
+  display_name: string;
+  status: string;
+  start_type: string;
+}
+
 export type PackageManager = "winget" | "choco";

@@ -1,0 +1,15 @@
+id: updates.disable-delivery-optimization
+category: updates
+risk: safe
+requires_restart: false
+description: >-
+  Desactiva Delivery Optimization (descarga P2P de actualizaciones desde
+  otros PCs de tu red o de Internet). Windows Update sigue funcionando
+  normalmente, solo descarga directo de los servidores de Microsoft.
+targets:
+  registry:
+    - HKLM\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization
+script: Disable-DeliveryOptimization.ps1
+test: Test-DeliveryOptimizationDisabled
+apply: Invoke-ApplyDisableDeliveryOptimization
+revert: Invoke-RevertDisableDeliveryOptimization

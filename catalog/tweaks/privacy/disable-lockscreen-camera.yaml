@@ -1,0 +1,14 @@
+id: privacy.disable-lockscreen-camera
+category: privacy
+risk: safe
+requires_restart: false
+description: >-
+  Impide invocar la cámara desde la pantalla de bloqueo (deslizar o pulsar
+  para abrir la cámara sin iniciar sesión).
+targets:
+  registry:
+    - HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization
+script: Disable-LockscreenCamera.ps1
+test: Test-LockscreenCameraDisabled
+apply: Invoke-ApplyDisableLockscreenCamera
+revert: Invoke-RevertDisableLockscreenCamera

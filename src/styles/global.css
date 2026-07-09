@@ -142,12 +142,31 @@ code, pre {
   border: 1px solid var(--border);
   border-radius: 10px;
   background: var(--bg-card);
+  transition: border-color 0.15s ease;
 }
 
-.tweak-card__body strong {
-  display: inline-flex;
+.tweak-card:hover {
+  border-color: #34353f;
+}
+
+.tweak-card__title {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.tweak-card__meta {
+  display: flex;
   align-items: center;
-  gap: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.3rem;
+}
+
+.tweak-card__desc {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  margin: 0.3rem 0 0;
+  max-width: 62ch;
 }
 
 .tweak-card__actions {
@@ -157,12 +176,19 @@ code, pre {
   flex-shrink: 0;
 }
 
+.restart-hint {
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  cursor: help;
+}
+
 .risk-badge {
-  font-size: 0.7rem;
-  padding: 0.15rem 0.55rem;
+  font-size: 0.68rem;
+  padding: 0.1rem 0.5rem;
   border-radius: 999px;
   color: #0f1115;
-  font-weight: 700;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
 }
 
@@ -170,7 +196,13 @@ code, pre {
 .risk-badge--moderate { background: var(--risk-moderate); }
 .risk-badge--advanced { background: var(--risk-advanced); }
 .risk-badge--expert { background: var(--risk-expert); }
-.risk-badge--neutral { background: var(--text-dim); }
+.risk-badge--neutral {
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  text-transform: none;
+  font-weight: 500;
+}
 
 /* --- Toggle switch (estilo WinScript/Wintoys) --- */
 
@@ -295,7 +327,10 @@ code, pre {
 /* --- View Script --- */
 
 .script-preview {
+  display: block;
+  width: 100%;
   background: #0a0a0d;
+  color: var(--text);
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 1rem;
@@ -305,6 +340,41 @@ code, pre {
   line-height: 1.5;
   white-space: pre-wrap;
   word-break: break-word;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.script-preview:focus {
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
+}
+
+.script-warning {
+  color: var(--risk-moderate);
+  font-size: 0.82rem;
+  margin: 0.6rem 0;
+}
+
+/* --- Servicios --- */
+
+.services-search {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  margin: 0.75rem 0;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.services-select {
+  background: var(--bg-elevated);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.85rem;
 }
 
 /* --- Action bar --- */

@@ -6,6 +6,7 @@ use tauri_plugin_shell::ShellExt;
 use crate::apps::{self, AppCatalog, AppEntry};
 use crate::blacklist;
 use crate::catalog::{self, Catalog, Tweak};
+use crate::services::ServiceInfo;
 use crate::system::SystemInfo;
 use crate::tools::{self, ToolCatalog, ToolEntry};
 
@@ -268,4 +269,75 @@ pub async fn run_tool(app: AppHandle, state: State<'_, ToolCatalogState>, id: St
 #[tauri::command]
 pub async fn get_system_info(app: AppHandle) -> Result<SystemInfo, String> {
     crate::system::query(&app).await.map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub async fn list_services(app: AppHandle) -> Result<Vec<ServiceInfo>, String> {
+    crate::services::list_services(&app).await.map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub async fn set_service_startup(app: AppHandle, name: String, start_type: String) -> Result<(), String> {
+    if blacklist::is_service_blacklisted(&name) {
+        return Err(format!(
+            "'{name}' es un servicio protegido (ver docs/BLACKLIST.md) — su tipo de inicio no se puede cambiar desde RCK"
+        ));
+    }
+    crate::services::set_service_startup(&app, &name, &start_type)
+        .await
+        .map_err(|e| e.to_string())
+}
+
+/// Ejecuta texto de PowerShell arbitrario que el usuario escribió/editó en
+/// el panel "Ver Script". A diferencia de todo lo demás en este archivo,
+/// esto NO pasa por el catálogo firmado ni por la lista negra basada en
+/// `targets` — es, deliberadamente, la vía de escape para power users que
+/// quieren correr exactamente lo que han escrito (como el "Run Script" de
+/// WinScript). La única red de seguridad que sí se aplica es
+/// `guard::check_content`: los mismos patrones catastróficos prohibidos en
+/// todo el catálogo (takeown/icacls/bcdedit, borrado bajo System32...)
+/// también están prohibidos aquí.
+#[tauri::command]
+pub async fn run_raw_script(app: AppHandle, script: String) -> Result<String, String> {
+    crate::guard::check_content(&script).map_err(|e| e.to_string())?;
+
+    let temp_dir = std::env::temp_dir();
+    let file_name = format!("rck-run-{}.ps1", uuid_like());
+    let temp_path = temp_dir.join(file_name);
+
+    std::fs::write(&temp_path, &script).map_err(|e| format!("no se pudo escribir el script temporal: {e}"))?;
+
+    let output = app
+        .shell()
+        .command("powershell")
+        .args([
+            "-NoProfile",
+            "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            &temp_path.to_string_lossy(),
+        ])
+        .output()
+        .await
+        .map_err(|e| format!("no se pudo invocar powershell: {e}"));
+
+    let _ = std::fs::remove_file(&temp_path);
+
+    let output = output?;
+    let stdout = String::from_utf8_lossy(&output.stdout).to_string();
+    if !output.status.success() {
+        return Err(format!(
+            "el script terminó con error: {}\n{}",
+            String::from_utf8_lossy(&output.stderr),
+            stdout
+        ));
+    }
+    Ok(stdout)
+}
+
+fn uuid_like() -> String {
+    use std::time::{SystemTime, UNIX_EPOCH};
+    let nanos = SystemTime::now().duration_since(UNIX_EPOCH).map(|d| d.as_nanos()).unwrap_or(0);
+    format!("{nanos:x}-{}", std::process::id())
 }
