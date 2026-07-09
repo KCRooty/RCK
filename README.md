@@ -58,7 +58,9 @@ npm run tauri:dev
 
 ✅ Fase 3b: gestor de **Servicios** en vivo (lectura real de `Get-Service`, cambio de tipo de inicio, protegido por la misma lista negra), y editor de **script ejecutable** en "Ver Script" — puedes editar libremente el `.ps1` generado y correrlo tal cual desde la app (`guard::check_content` lo escanea contra los mismos patrones catastróficos prohibidos antes de ejecutar, aunque no pase por la lista negra basada en `targets`). Pase de diseño hacia algo más minimalista (menos badges apilados, tipografía más contenida).
 
-🚧 Pendiente: navegador de apps instaladas con desinstalación (tipo Wintoys, distinto del catálogo curado de instalación — y del nuevo gestor de Servicios), medidores de CPU/RAM/red en vivo en el dashboard, iconos propios (los actuales son placeholder). Deliberadamente fuera de alcance: scripts de activación (MAS) — no es algo que este proyecto vaya a incluir. Ver `docs/ARCHITECTURE.md` para el roadmap completo.
+✅ Fase 3c: **medidores en vivo de CPU/RAM/red** en el dashboard "Inicio" (`sysinfo`, sin lanzar `powershell.exe` por consulta — se actualizan cada segundo mientras el panel está abierto), y **navegador de apps instaladas** (`src-tauri/src/installed_apps.rs`, lee las claves de registro `Uninstall` reales, igual que "Aplicaciones y características") con desinstalación ejecutando el desinstalador original de cada programa, pasado por `guard::check_content` antes de correr. Distinto del catálogo curado de apps instalables y del gestor de Servicios.
+
+🚧 Pendiente: iconos propios (los actuales son placeholder). Deliberadamente fuera de alcance: scripts de activación (MAS) — no es algo que este proyecto vaya a incluir. Ver `docs/ARCHITECTURE.md` para el roadmap completo.
 
 ## Aviso
 
