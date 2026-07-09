@@ -6,8 +6,9 @@ use tauri_plugin_shell::ShellExt;
 use crate::apps::{self, AppCatalog, AppEntry};
 use crate::blacklist;
 use crate::catalog::{self, Catalog, Tweak};
+use crate::installed_apps::InstalledApp;
 use crate::services::ServiceInfo;
-use crate::system::SystemInfo;
+use crate::system::{LiveMetrics, MetricsState, SystemInfo};
 use crate::tools::{self, ToolCatalog, ToolEntry};
 
 pub struct CatalogState(pub Mutex<Catalog>);
@@ -269,6 +270,21 @@ pub async fn run_tool(app: AppHandle, state: State<'_, ToolCatalogState>, id: St
 #[tauri::command]
 pub async fn get_system_info(app: AppHandle) -> Result<SystemInfo, String> {
     crate::system::query(&app).await.map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub fn get_live_metrics(state: State<MetricsState>) -> Result<LiveMetrics, String> {
+    crate::system::read_live_metrics(&state).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub async fn list_installed_apps(app: AppHandle) -> Result<Vec<InstalledApp>, String> {
+    crate::installed_apps::list_installed_apps(&app).await.map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub async fn uninstall_installed_app(app: AppHandle, uninstall_command: String) -> Result<String, String> {
+    crate::installed_apps::uninstall(&app, &uninstall_command).await.map_err(|e| e.to_string())
 }
 
 #[tauri::command]

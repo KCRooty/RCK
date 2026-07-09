@@ -79,6 +79,9 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
         <div class="sidebar__item" data-panel-target="services">
           <span class="sidebar__item-icon">🧰</span> Servicios
         </div>
+        <div class="sidebar__item" data-panel-target="installed-apps">
+          <span class="sidebar__item-icon">💾</span> Apps instaladas
+        </div>
         <div class="sidebar__item" data-panel-target="script">
           <span class="sidebar__item-icon">📜</span> Ver Script
         </div>
@@ -94,6 +97,20 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
             <div class="stat-card">
               <div class="stat-card__label">Estado</div>
               <div class="stat-card__value" id="system-info-status">Cargando…</div>
+            </div>
+          </div>
+          <div class="stat-grid" id="live-metrics-grid">
+            <div class="stat-card">
+              <div class="stat-card__label">🧠 Procesador</div>
+              <div class="stat-card__value" id="metric-cpu">—</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card__label">📊 Memoria</div>
+              <div class="stat-card__value" id="metric-ram">—</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card__label">🌐 Red</div>
+              <div class="stat-card__value" id="metric-network">—</div>
             </div>
           </div>
           <div class="stat-grid">
@@ -253,6 +270,25 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
           </div>
         </section>
 
+        <!-- Apps instaladas -->
+        <section class="panel" data-panel="installed-apps" hidden>
+          <div class="main__header">
+            <h1>💾 Apps instaladas</h1>
+            <span class="main__count" id="installed-apps-count">
+              <button class="button" id="installed-apps-refresh" style="padding: 0.3rem 0.75rem; font-size: 0.8rem;">🔄 Actualizar</button>
+            </span>
+          </div>
+          <p style="color: var(--text-dim); font-size: 0.85rem;">
+            Todo lo que Windows ya tiene instalado (igual que "Aplicaciones y características"), leído de las claves
+            de registro <code>Uninstall</code> — distinto del catálogo de <strong>Apps</strong>, que es para instalar
+            cosas nuevas. Desinstalar aquí ejecuta el desinstalador original del propio programa.
+          </p>
+          <input type="text" id="installed-apps-search" placeholder="Buscar apps instaladas..." class="services-search" />
+          <div id="installed-apps-list" class="tweak-list">
+            <p style="color: var(--text-dim);">Pulsa 🔄 Actualizar para cargar las apps instaladas.</p>
+          </div>
+        </section>
+
         <!-- Ver Script -->
         <section class="panel" data-panel="script" hidden>
           <div class="main__header">
@@ -357,7 +393,10 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
           if (target === "script") refreshScriptPreview();
           if (target === "apps") refreshAppStatuses();
           if (target === "services") loadServices();
+          if (target === "installed-apps") loadInstalledApps();
           if (target?.startsWith("cat-")) refreshTweakStatuses(target.replace("cat-", ""));
+          if (target === "inicio") startMetricsPolling();
+          else stopMetricsPolling();
         });
       });
 
@@ -635,6 +674,9 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
 
         if (!desktopMode) {
           statusEl.textContent = "Solo disponible en la app de escritorio";
+          ["metric-cpu", "metric-ram", "metric-network"].forEach((id) => {
+            document.getElementById(id)!.textContent = "N/D (web)";
+          });
           return;
         }
 
@@ -650,6 +692,43 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
         } catch (err) {
           statusEl.textContent = "No se pudo leer la información del sistema";
           console.error(err);
+        }
+      }
+
+      // Medidores en vivo (CPU/RAM/Red): solo mientras el panel "Inicio"
+      // está visible, para no seguir consultando en segundo plano cuando el
+      // usuario está en otra sección.
+      let metricsInterval: ReturnType<typeof setInterval> | undefined;
+
+      function formatBytesPerSec(bytes: number): string {
+        if (bytes < 1024) return `${bytes} B/s`;
+        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB/s`;
+        return `${(bytes / 1024 / 1024).toFixed(1)} MB/s`;
+      }
+
+      async function pollLiveMetrics() {
+        try {
+          const m = await desktop.getLiveMetrics();
+          document.getElementById("metric-cpu")!.textContent = `${m.cpu_percent.toFixed(0)}%`;
+          document.getElementById("metric-ram")!.textContent =
+            `${m.ram_percent.toFixed(0)}% (${m.ram_used_gb.toFixed(1)}/${m.ram_total_gb.toFixed(1)} GB)`;
+          document.getElementById("metric-network")!.textContent =
+            `↓ ${formatBytesPerSec(m.network_down_bytes_per_sec)} · ↑ ${formatBytesPerSec(m.network_up_bytes_per_sec)}`;
+        } catch (err) {
+          console.error("No se pudieron leer las métricas en vivo:", err);
+        }
+      }
+
+      function startMetricsPolling() {
+        if (!desktopMode || metricsInterval) return;
+        pollLiveMetrics();
+        metricsInterval = setInterval(pollLiveMetrics, 1000);
+      }
+
+      function stopMetricsPolling() {
+        if (metricsInterval) {
+          clearInterval(metricsInterval);
+          metricsInterval = undefined;
         }
       }
 
@@ -725,7 +804,93 @@ const SUBCATEGORY_LABELS: Record<string, string> = {
         });
       });
 
+      // Apps instaladas: lectura en vivo del registro (no forma parte del
+      // catálogo de apps instalables). El comando de desinstalación no se
+      // guarda en el DOM (podría llevar comillas/caracteres raros) — se
+      // referencia por índice a esta caché en memoria.
+      let installedAppsLoaded = false;
+      let installedAppsCache: import("../lib/types").InstalledApp[] = [];
+
+      function escapeHtml(str: string): string {
+        return str.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+      }
+
+      function renderInstalledAppRow(appInfo: import("../lib/types").InstalledApp, index: number): string {
+        const meta = [appInfo.version, appInfo.publisher, appInfo.size_mb ? `${appInfo.size_mb.toFixed(0)} MB` : null]
+          .filter(Boolean)
+          .map((v) => `<span class="risk-badge risk-badge--neutral">${escapeHtml(String(v))}</span>`)
+          .join("");
+        const canUninstall = Boolean(appInfo.uninstall_command);
+        return `
+          <div class="tweak-card" data-installed-app-row data-installed-app-search="${escapeHtml((appInfo.name + " " + (appInfo.publisher ?? "")).toLowerCase())}">
+            <div class="tweak-card__body">
+              <div class="tweak-card__title">${escapeHtml(appInfo.name)}</div>
+              <div class="tweak-card__meta">${meta}</div>
+            </div>
+            <div class="tweak-card__actions">
+              <button class="button" data-uninstall-index="${index}" ${canUninstall ? "" : "disabled"}>
+                🗑️ Desinstalar
+              </button>
+            </div>
+          </div>`;
+      }
+
+      async function loadInstalledApps(force = false) {
+        if (installedAppsLoaded && !force) return;
+        const list = document.getElementById("installed-apps-list")!;
+        const count = document.getElementById("installed-apps-count")!;
+
+        if (!desktopMode) {
+          list.innerHTML = '<p style="color: var(--text-dim);">Solo disponible en la app de escritorio.</p>';
+          return;
+        }
+
+        list.innerHTML = '<p style="color: var(--text-dim);">Cargando apps instaladas...</p>';
+
+        try {
+          installedAppsCache = await desktop.listInstalledApps();
+          installedAppsLoaded = true;
+          list.innerHTML = installedAppsCache.map((a, i) => renderInstalledAppRow(a, i)).join("");
+          count.insertAdjacentHTML(
+            "afterbegin",
+            `<span style="margin-right: 0.75rem;">${installedAppsCache.length} apps</span>`
+          );
+
+          list.querySelectorAll<HTMLButtonElement>("[data-uninstall-index]").forEach((button) => {
+            button.addEventListener("click", async () => {
+              const target = installedAppsCache[Number(button.dataset.uninstallIndex)];
+              if (!target?.uninstall_command) return;
+              if (!confirm(`¿Desinstalar "${target.name}"? Esto ejecuta el desinstalador original del programa.`)) {
+                return;
+              }
+              button.disabled = true;
+              button.textContent = "Desinstalando...";
+              try {
+                await desktop.uninstallInstalledApp(target.uninstall_command);
+                await loadInstalledApps(true);
+              } catch (err) {
+                alert(`No se pudo desinstalar "${target.name}": ${err}`);
+                button.disabled = false;
+                button.textContent = "🗑️ Desinstalar";
+              }
+            });
+          });
+        } catch (err) {
+          list.innerHTML = `<p style="color: var(--text-dim);">No se pudo cargar la lista de apps instaladas: ${err}</p>`;
+        }
+      }
+
+      document.getElementById("installed-apps-refresh")!.addEventListener("click", () => loadInstalledApps(true));
+
+      document.getElementById("installed-apps-search")!.addEventListener("input", (e) => {
+        const query = (e.target as HTMLInputElement).value.trim().toLowerCase();
+        document.querySelectorAll<HTMLElement>("[data-installed-app-row]").forEach((row) => {
+          row.hidden = query.length > 0 && !(row.dataset.installedAppSearch ?? "").includes(query);
+        });
+      });
+
       loadSystemInfo();
+      startMetricsPolling();
       updateActionBar();
     </script>
   </body>

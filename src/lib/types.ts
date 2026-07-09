@@ -59,11 +59,29 @@ export interface SystemInfo {
   ram_total_gb: number;
 }
 
+export interface LiveMetrics {
+  cpu_percent: number;
+  ram_used_gb: number;
+  ram_total_gb: number;
+  ram_percent: number;
+  network_down_bytes_per_sec: number;
+  network_up_bytes_per_sec: number;
+}
+
 export interface ServiceInfo {
   name: string;
   display_name: string;
   status: string;
   start_type: string;
+}
+
+export interface InstalledApp {
+  name: string;
+  version?: string;
+  publisher?: string;
+  size_mb?: number;
+  install_date?: string;
+  uninstall_command?: string;
 }
 
 export type PackageManager = "winget" | "choco";

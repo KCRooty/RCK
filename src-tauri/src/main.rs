@@ -7,6 +7,7 @@ mod blacklist;
 mod catalog;
 mod commands;
 mod guard;
+mod installed_apps;
 mod services;
 mod signature;
 mod system;
@@ -17,6 +18,7 @@ use std::sync::Mutex;
 use tauri::Manager;
 
 use commands::{AppCatalogState, CatalogState, ToolCatalogState};
+use system::MetricsState;
 
 fn main() {
     tauri::Builder::default()
@@ -43,6 +45,8 @@ fn main() {
                 .expect("el catálogo de herramientas debe cargar correctamente al arrancar");
             app.manage(ToolCatalogState(Mutex::new(tool_catalog)));
 
+            app.manage(MetricsState::default());
+
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -58,9 +62,12 @@ fn main() {
             commands::list_tools,
             commands::run_tool,
             commands::get_system_info,
+            commands::get_live_metrics,
             commands::list_services,
             commands::set_service_startup,
             commands::run_raw_script,
+            commands::list_installed_apps,
+            commands::uninstall_installed_app,
         ])
         .run(tauri::generate_context!())
         .expect("error al ejecutar la aplicación RCK");

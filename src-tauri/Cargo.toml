@@ -20,6 +20,7 @@ sha2 = "0.10"
 base64 = "0.22"
 anyhow = "1"
 chrono = { version = "0.4", features = ["serde"] }
+sysinfo = "0.32"
 
 [[bin]]
 name = "rck"
