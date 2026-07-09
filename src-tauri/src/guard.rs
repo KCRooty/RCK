@@ -64,31 +64,40 @@ pub fn scan_scripts_for_forbidden_patterns(scripts_dir: &Path) -> Result<()> {
     for path in walk_ps1_files(scripts_dir)? {
         let content = std::fs::read_to_string(&path)
             .with_context(|| format!("no se pudo leer {}", path.display()))?;
-        let lowercase = content.to_ascii_lowercase();
+        check_content(&content)
+            .with_context(|| format!("rechazado en '{}'", path.display()))?;
+    }
 
-        for pattern in FORBIDDEN_PATTERNS {
-            if lowercase.contains(pattern) {
-                bail!(
-                    "'{}' contiene el patrón prohibido '{}' — un tweak de RCK nunca debe usar este comando (ver guard.rs)",
-                    path.display(),
-                    pattern
-                );
-            }
+    Ok(())
+}
+
+/// Misma comprobación que `scan_scripts_for_forbidden_patterns`, pero sobre
+/// un string en memoria en vez de archivos del catálogo. La usa
+/// `commands::run_raw_script` para el editor de "Ejecutar script": el
+/// usuario puede escribir/editar lo que quiera, pero antes de correrlo con
+/// permisos de administrador se comprueba contra los mismos patrones
+/// prohibidos que ya protegen al catálogo firmado. No es una sandbox
+/// completa — es la misma defensa de última línea que el resto de RCK,
+/// aplicada también aquí en vez de confiar ciegamente en el texto pegado.
+pub fn check_content(content: &str) -> Result<()> {
+    let lowercase = content.to_ascii_lowercase();
+
+    for pattern in FORBIDDEN_PATTERNS {
+        if lowercase.contains(pattern) {
+            bail!(
+                "contiene el patrón prohibido '{pattern}' — RCK nunca ejecuta este comando (ver guard.rs)"
+            );
         }
+    }
 
-        for line in lowercase.lines() {
-            let has_delete_verb = DELETE_VERBS.iter().any(|v| line.contains(v));
-            if !has_delete_verb {
-                continue;
-            }
-            for protected in PROTECTED_DELETE_PATHS {
-                if line.contains(protected) {
-                    bail!(
-                        "'{}' intenta borrar algo bajo la ruta protegida '{}' — rechazado (ver guard.rs)",
-                        path.display(),
-                        protected
-                    );
-                }
+    for line in lowercase.lines() {
+        let has_delete_verb = DELETE_VERBS.iter().any(|v| line.contains(v));
+        if !has_delete_verb {
+            continue;
+        }
+        for protected in PROTECTED_DELETE_PATHS {
+            if line.contains(protected) {
+                bail!("intenta borrar algo bajo la ruta protegida '{protected}' — rechazado (ver guard.rs)");
             }
         }
     }
@@ -132,5 +141,16 @@ mod tests {
 
         std::fs::remove_dir_all(&tmp).ok();
         assert!(result.is_err());
+    }
+
+    #[test]
+    fn check_content_rejects_raw_script_with_forbidden_pattern() {
+        assert!(check_content("bcdedit /set hypervisorlaunchtype off").is_err());
+        assert!(check_content("Remove-Item -Recurse -Force C:\\Windows\\System32\\drivers").is_err());
+    }
+
+    #[test]
+    fn check_content_allows_benign_script() {
+        assert!(check_content("Write-Host 'hola'; Get-Service | Select-Object -First 5").is_ok());
     }
 }

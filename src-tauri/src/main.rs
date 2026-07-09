@@ -7,6 +7,7 @@ mod blacklist;
 mod catalog;
 mod commands;
 mod guard;
+mod services;
 mod signature;
 mod system;
 mod tools;
@@ -57,6 +58,9 @@ fn main() {
             commands::list_tools,
             commands::run_tool,
             commands::get_system_info,
+            commands::list_services,
+            commands::set_service_startup,
+            commands::run_raw_script,
         ])
         .run(tauri::generate_context!())
         .expect("error al ejecutar la aplicación RCK");

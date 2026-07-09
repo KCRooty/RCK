@@ -1,0 +1,15 @@
+id: privacy.disable-background-apps
+category: privacy
+risk: safe
+requires_restart: false
+description: >-
+  Impide que las apps de Microsoft Store sigan corriendo en segundo plano
+  cuando no las estás usando activamente (recibiendo notificaciones,
+  sincronizando datos). No afecta a apps de escritorio tradicionales.
+targets:
+  registry:
+    - HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications
+script: Disable-BackgroundApps.ps1
+test: Test-BackgroundAppsDisabled
+apply: Invoke-ApplyDisableBackgroundApps
+revert: Invoke-RevertDisableBackgroundApps

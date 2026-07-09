@@ -1,0 +1,13 @@
+id: performance.disable-wake-timers
+category: performance
+risk: safe
+requires_restart: false
+description: >-
+  Desactiva los temporizadores de reactivación (wake timers) del plan de
+  energía activo, para que tareas programadas no puedan sacar el equipo
+  de suspensión solas. No afecta el despertar manual (teclado/ratón).
+targets: {}
+script: Disable-WakeTimers.ps1
+test: Test-WakeTimersDisabled
+apply: Invoke-ApplyDisableWakeTimers
+revert: Invoke-RevertDisableWakeTimers
