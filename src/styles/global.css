@@ -4,9 +4,14 @@
   --bg-card: #1c1d24;
   --text: #eceef1;
   --text-dim: #9297a3;
-  --accent: #8b5cf6;
-  --accent-hover: #7c3aed;
-  --accent-soft: rgba(139, 92, 246, 0.16);
+  /* Acento de marca Static Forge (ver DESIGN.md). --accent para elementos no textuales
+     (interruptor, foco, borde); --accent-strong para fondos con texto blanco encima,
+     porque #7B61FF con texto blanco no llega a 4.5:1. */
+  --accent: #7b61ff;
+  --accent-strong: #5f45e6;
+  --accent-hover: #5238d4;
+  --accent-soft: rgba(123, 97, 255, 0.16);
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
   --risk-safe: #3ecf8e;
   --risk-moderate: #e2b93b;
   --risk-advanced: #e2793b;
@@ -38,12 +43,32 @@ code, pre {
 /* --- Sidebar --- */
 
 .sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
   background: var(--bg-elevated);
   border-right: 1px solid var(--border);
   padding: 1rem 0.75rem;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+}
+
+/* Píldora de cristal que marca la sección activa (ver DESIGN.md, "Material").
+   Va DETRÁS de la etiqueta: probada por encima, la lente partía el texto en dos. */
+.sidebar__indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 8px;
+  visibility: hidden;
+}
+
+.sidebar__indicator.is-ready {
+  visibility: visible;
 }
 
 .sidebar__brand {
@@ -81,15 +106,22 @@ code, pre {
 }
 
 .sidebar__item {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 0.6rem;
+  width: 100%;
+  min-height: 2.4rem;
   padding: 0.55rem 0.6rem;
-  border-radius: 6px;
+  border: none;
+  border-radius: 8px;
+  background: none;
   color: var(--text-dim);
   cursor: pointer;
-  border-left: 3px solid transparent;
+  font: inherit;
   font-size: 0.92rem;
+  text-align: left;
 }
 
 .sidebar__item:hover {
@@ -97,10 +129,19 @@ code, pre {
   color: var(--text);
 }
 
+.sidebar__item:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
 .sidebar__item.active {
-  background: var(--accent-soft);
   color: var(--text);
-  border-left-color: var(--accent);
+  font-weight: 600;
+}
+
+/* Sin JS (o antes de montar el cristal) la sección activa sigue marcada. */
+.sidebar:not(.has-glass-indicator) .sidebar__item.active {
+  background: var(--accent-soft);
 }
 
 .sidebar__item-icon {
@@ -274,9 +315,18 @@ code, pre {
   border-color: var(--accent);
 }
 
+.button:focus-visible,
+.sidebar__uncheck:focus-visible,
+.switch input:focus-visible + .switch__track,
+.services-search:focus-visible,
+.services-select:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
 .button--primary {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
   color: white;
 }
 
@@ -379,16 +429,69 @@ code, pre {
 
 /* --- Action bar --- */
 
+/* La barra flota sobre la lista: es la única superficie elevada (sombra) y una de las
+   dos de cristal (ver DESIGN.md). Sin cristal montado, conserva el fondo sólido. */
 .action-bar {
   position: sticky;
   bottom: 1rem;
+  z-index: 5;
   margin-top: 1.5rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+/* Móvil / ventanas estrechas: el menú pasa arriba en dos columnas. */
+@media (max-width: 760px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sidebar {
+    position: relative;
+    height: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar__brand,
+  .sidebar__uncheck,
+  .sidebar__section-label {
+    grid-column: 1 / -1;
+  }
+
+  .main {
+    padding: 1rem 1rem 6rem;
+    min-width: 0;
+  }
+
+  .tweak-card {
+    flex-wrap: wrap;
+  }
+
+  .tweak-card__actions {
+    flex-wrap: wrap;
+  }
+}
+
+.action-bar.is-glass {
+  background: rgba(22, 23, 29, 0.55);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.action-bar > .ql-content {
+  position: relative;
+  z-index: 10;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
   padding: 1rem 1.25rem;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+#selection-count {
+  white-space: nowrap;
 }
