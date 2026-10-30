@@ -4,6 +4,16 @@
 
 **Página del proyecto:** [staticforge.me](https://staticforge.me/#proyectos)
 
+## Capturas
+
+![Inicio de RCK](docs/screenshots/01-inicio.png)
+
+*Panel de inicio: equipo, CPU, GPU, RAM y uso en vivo, con el recuento de tweaks, apps y herramientas disponibles.*
+
+![Debloat](docs/screenshots/02-debloat.png)
+
+*Cada tweak lleva su etiqueta de riesgo (SAFE / MODERATE) y explica qué hace antes de aplicarlo; nada se aplica hasta pulsar «Aplicar cambios».*
+
 **RCK** es un optimizador y configurador todo-en-uno para **Windows 10/11**: debloat, privacidad, rendimiento, servicios y utilidades varias, en una sola app ligera.
 
 A diferencia de herramientas "tierra quemada" (Platinum, ISOs debloateadas), RCK está diseñado para que **todo cambio sea reversible y verificable**: nunca toca componentes esenciales del sistema, siempre permite deshacer, y siempre puedes ver qué hace un tweak antes de aplicarlo.
