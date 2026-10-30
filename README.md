@@ -1,4 +1,8 @@
+<img src="assets/logo.png" alt="RCK" width="96" height="96">
+
 # RCK
+
+**Página del proyecto:** [staticforge.me](https://staticforge.me/#proyectos)
 
 **RCK** es un optimizador y configurador todo-en-uno para **Windows 10/11**: debloat, privacidad, rendimiento, servicios y utilidades varias, en una sola app ligera.
 
