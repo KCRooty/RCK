@@ -26,7 +26,7 @@ export const WINSCRIPT_TWEAK_MAP: Record<string, string[]> = {
   widgets: ["debloat.disable-widgets"],
   taskbarwidgets: ["debloat.disable-widgets"],
 
-  // Privacidad — todas las variantes de "acceso de apps a X" convergen en
+  // Privacidad: todas las variantes de "acceso de apps a X" convergen en
   // un único tweak de RCK que deniega por política el acceso de apps UWP.
   locationaccess: ["privacy.restrict-app-permissions"],
   cameraccess: ["privacy.restrict-app-permissions"],
@@ -93,7 +93,7 @@ export const WINSCRIPT_TWEAK_MAP: Record<string, string[]> = {
 
 /**
  * Claves de WinScript que RCK reconoce pero rechaza a propósito por tocar
- * componentes de la lista negra (ver docs/BLACKLIST.md) — se listan aparte
+ * componentes de la lista negra (ver docs/BLACKLIST.md), se listan aparte
  * para poder explicarle al usuario por qué no se importaron, en vez de
  * ignorarlas en silencio como el resto de claves no soportadas.
  */
