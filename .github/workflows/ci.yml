@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Dependencias web
+        run: npm ci
+
+      - name: Catálogo web y comprobación de tipos
+        run: |
+          node scripts/build-web-catalog.mjs
+          npx astro check
+
+      - name: Compilar la web
+        run: npm run build
+
+      - name: Tests de Rust (firma del catálogo, lista negra, guardas)
+        working-directory: src-tauri
+        run: cargo test --locked
