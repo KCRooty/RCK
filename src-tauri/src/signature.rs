@@ -40,7 +40,10 @@ fn hash_catalog(catalog_dir: &Path) -> Result<[u8; 32]> {
 
     let mut hasher = Sha256::new();
     for file in files {
-        let content = std::fs::read(&file)?;
+        // Se ignoran los CR: el mismo catálogo da el mismo hash con fin de línea LF o CRLF
+        // (git con autocrlf cambia los bytes según el sistema que clona).
+        let mut content = std::fs::read(&file)?;
+        content.retain(|b| *b != b'\r');
         hasher.update(&content);
     }
     Ok(hasher.finalize().into())
