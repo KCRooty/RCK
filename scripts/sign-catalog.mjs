@@ -49,7 +49,8 @@ function hashCatalog() {
   }
   const hash = createHash("sha256");
   for (const file of files) {
-    hash.update(readFileSync(file));
+    // Sin CR: mismo hash con fin de línea LF o CRLF (ver signature.rs).
+    hash.update(Buffer.from(readFileSync(file).filter((b) => b !== 0x0d)));
   }
   console.log(`Firmando ${files.length} tweak(s):`);
   files.forEach((f) => console.log(`  - ${f.replace(catalogDir, "catalog")}`));

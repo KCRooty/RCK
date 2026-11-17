@@ -74,7 +74,9 @@ npm run tauri:dev
 
 ✅ Fase 3c: **medidores en vivo de CPU/RAM/red** en el dashboard "Inicio" (`sysinfo`, sin lanzar `powershell.exe` por consulta — se actualizan cada segundo mientras el panel está abierto), y **navegador de apps instaladas** (`src-tauri/src/installed_apps.rs`, lee las claves de registro `Uninstall` reales, igual que "Aplicaciones y características") con desinstalación ejecutando el desinstalador original de cada programa, pasado por `guard::check_content` antes de correr. Distinto del catálogo curado de apps instalables y del gestor de Servicios.
 
-🚧 Pendiente: iconos propios (los actuales son placeholder). Deliberadamente fuera de alcance: scripts de activación (MAS) — no es algo que este proyecto vaya a incluir. Ver `docs/ARCHITECTURE.md` para el roadmap completo.
+✅ Interfaz de utilidad de sistema (2026-11-17): menú lateral de texto, filas planas con interruptor, riesgo a la vista y tipografía monoespaciada para los datos, en la línea de PowerToys y WinUtil. Se retiró el cristal líquido. Iconos propios generados desde el logo. CI en GitHub Actions (tipos, build web y tests de Rust). La firma del catálogo ya no depende del fin de línea (LF/CRLF).
+
+🚧 Pendiente: ampliar la equivalencia con perfiles de WinScript (hoy es parcial, al importar se listan las claves sin equivalente). Instalador sin firma de código: Windows SmartScreen avisará. Deliberadamente fuera de alcance: scripts de activación (MAS) — no es algo que este proyecto vaya a incluir. Ver `docs/ARCHITECTURE.md` para el roadmap completo.
 
 ## Aviso
 
