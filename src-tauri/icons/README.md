@@ -1,9 +1,5 @@
-Los iconos actuales (`32x32.png`, `128x128.png`, `icon.ico`) son un placeholder genérico (cuadrado azul/oscuro) generado solo para que `tauri build` no falle por archivos faltantes. Reemplázalos por el logo real cuando lo tengas.
+Iconos generados a partir de `assets/logo.png` (azulejo recortado con esquinas redondeadas, 1024 px) con:
 
-Cuando tengas un logo (PNG cuadrado, idealmente 1024x1024), genera el set completo con:
+    npx @tauri-apps/cli icon icono-1024.png -o src-tauri/icons
 
-```bash
-npx @tauri-apps/cli icon path/to/logo.png
-```
-
-Esto crea `32x32.png`, `128x128.png`, `icon.ico`, etc. en este directorio, tal como los referencia `src-tauri/tauri.conf.json`.
+Solo se conservan los formatos de escritorio (PNG, ICO, ICNS); se descartan los de Android, iOS y Microsoft Store.
