@@ -47,15 +47,22 @@ export const WINSCRIPT_TWEAK_MAP: Record<string, string[]> = {
   radioaccess: ["privacy.restrict-app-permissions"],
   recordingsaccess: ["privacy.restrict-app-permissions"],
   cloudsync: ["privacy.disable-clipboard-cloud-sync"],
-  activityfeed: ["privacy.disable-clipboard-cloud-sync"],
+  activityfeed: ["privacy.disable-clipboard-cloud-sync", "privacy.disable-activity-history"],
   automap: ["privacy.disable-clipboard-cloud-sync"],
   clipboard: ["privacy.disable-clipboard-cloud-sync"],
   wtelemetry: ["privacy.disable-telemetry"],
-  targetads: ["privacy.disable-tailored-experiences"],
+  targetads: ["privacy.disable-tailored-experiences", "privacy.disable-advertising-id"],
+  systemaccess: ["privacy.restrict-app-permissions"],
+  screenshotborderaccess: ["privacy.restrict-app-permissions"],
+  aigenerationaccess: ["privacy.restrict-app-permissions"],
+  backgroundapps: ["privacy.disable-background-apps"],
+  lockscreencamera: ["privacy.disable-lockscreen-camera"],
+  handwriting: ["privacy.disable-windows-ink"],
+  notificationtray: ["appearance.disable-action-center"],
   privacyconsent: ["privacy.disable-tailored-experiences"],
 
   // Rendimiento
-  fullscreenoptimizations: ["performance.gaming-mode"],
+  fullscreenoptimizations: ["performance.gaming-mode", "performance.disable-fullscreen-optimizations"],
   gamebar: ["performance.gaming-mode"],
   gamemode: ["performance.gaming-mode"],
   mpo: ["performance.gaming-mode"],
@@ -72,7 +79,11 @@ export const WINSCRIPT_TWEAK_MAP: Record<string, string[]> = {
   thirdparty: ["updates.pause-third-party-updates"],
   googleupdates: ["updates.pause-third-party-updates"],
   adobeupdates: ["updates.pause-third-party-updates"],
-  resetnetwork: ["tools.optimize-network-stack"],
+  resetnetwork: ["tools.optimize-network-stack", "tools.flush-dns"],
+  dism: ["tools.run-dism-restore-health"],
+  sfc: ["tools.run-sfc-scan"],
+  faststartup: ["system.disable-fast-startup"],
+  deliveryoptimization: ["updates.disable-delivery-optimization"],
 
   // Apariencia / sistema
   transparency: ["appearance.disable-transparency"],
@@ -97,7 +108,7 @@ export const WINSCRIPT_TWEAK_MAP: Record<string, string[]> = {
  * para poder explicarle al usuario por qué no se importaron, en vez de
  * ignorarlas en silencio como el resto de claves no soportadas.
  */
-export const WINSCRIPT_PROTECTED_KEYS = ["limitdefender", "coreisolation", "ipv6", "updatepause", "wupdate"];
+export const WINSCRIPT_PROTECTED_KEYS = ["limitdefender", "coreisolation", "ipv6", "updatepause", "wupdate", "disableupdate"];
 
 export const WINSCRIPT_APP_MAP: Record<string, string> = {
   Brave: "apps.brave",
@@ -126,6 +137,14 @@ export const WINSCRIPT_APP_MAP: Record<string, string> = {
   "GPU-Z": "apps.gpu-z",
   HWInfo: "apps.hwinfo",
   KeePass: "apps.keepassxc",
+  KeePassXC: "apps.keepassxc",
+  CrystalDiskInfo: "apps.crystaldiskinfo",
+  CrystalDiskMark: "apps.crystaldiskmark",
+  NanaZip: "apps.nanazip",
+  VeraCrypt: "apps.veracrypt",
+  WinSCP: "apps.winscp",
+  GitHub: "apps.github-desktop",
+  Temurin21: "apps.temurin-jdk",
   Afterburner: "apps.afterburner",
   qBitTorrent: "apps.qbittorrent",
   Rainmeter: "apps.rainmeter",
